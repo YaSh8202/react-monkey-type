@@ -1,25 +1,24 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import "./App.css";
+import { Box, Container } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import Navbar from "./components/Navbar";
 
 function App() {
+  const theme = useTheme();
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Box
+      padding={"24px 0px"}
+      margin={0}
+      width={"100%"}
+      minHeight={"100vh"}
+      bgcolor={theme.background.main}
+    >
+      <Container>
+        <Navbar />
+      </Container>
+    </Box>
   );
 }
 
