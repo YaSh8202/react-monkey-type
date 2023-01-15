@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button,
-  IconButton,
-  Paper,
-  Stack,
-  Typography,
-  styled,
-  useTheme,
-} from "@mui/material";
+import { Box, IconButton, Stack, Typography, useTheme } from "@mui/material";
 import React from "react";
 import MemoMtLogo from "./MtLogo";
 import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
@@ -15,15 +6,7 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import Grid from "@mui/material/Grid";
-import AlternateEmailIcon from "@mui/icons-material/AlternateEmail";
-const Item = styled(Paper)(({ theme }) => ({
-  backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
-  ...theme.typography.body2,
-  padding: theme.spacing(1),
-  textAlign: "center",
-  color: theme.palette.text.secondary,
-}));
+import ModesStack from "./ModesStack";
 
 function Navbar() {
   const theme = useTheme();
@@ -44,7 +27,15 @@ function Navbar() {
           alignItems={"center"}
         >
           <MemoMtLogo height={"24px"} width="40px" fill={theme.caret.main} />
-          <Box position={"relative"}>
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                sm: "block",
+              },
+            }}
+            position={"relative"}
+          >
             <Typography
               fontSize={10}
               variant="caption"
@@ -88,53 +79,7 @@ function Navbar() {
         </Stack>
       </Stack>
 
-      <Stack
-        sx={{
-          flexDirection: {
-            xs: "column",
-            md: "row",
-          },
-          backgroundColor: theme.sub.alt,
-          margin: "0 auto",
-          color: theme.sub.main,
-        }}
-      >
-        <Stack bgcolor={"transparent"} direction={"row"}>
-          <Button
-            startIcon={
-              <AlternateEmailIcon  sx={{ fontSize: 10 }} />
-            }
-            style={{
-              backgroundColor: "transparent",
-              color: theme.sub.main,
-              outline: "none",
-              border: "none",
-              fontWeight: "lighter",
-              textTransform: "none",
-              fontSize: "12px",
-              borderRadius: "8px",
-            }}
-          >
-            @&nbsp;punctuation
-          </Button>
-          <Button
-            style={{
-              backgroundColor: "transparent",
-              color: theme.sub.main,
-              outline: "none",
-              border: "none",
-              fontWeight: "lighter",
-              textTransform: "none",
-              fontSize: "12px",
-              borderRadius: "8px",
-            }}
-          >
-            @&nbsp;punctuation
-          </Button>
-        </Stack>
-        <Stack></Stack>
-        <Stack></Stack>
-      </Stack>
+      <ModesStack />
     </Box>
   );
 }
