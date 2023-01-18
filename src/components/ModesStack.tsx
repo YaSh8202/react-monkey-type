@@ -38,7 +38,7 @@ const ButtonContainer = styled(Stack)(({ theme }) => ({
     padding: "12px 8px 11px",
   },
 
-  "&>:first-child": {
+  "&>:first-of-type": {
     padding: "12px 8px 11px 16px",
   },
   "& > :last-child": {
@@ -72,12 +72,13 @@ function ModesStack() {
         },
         alignItems: {
           xs: "center",
-          md: "flex-start",
+          md: "center",
         },
         backgroundColor: theme.sub.alt,
         margin: "0 auto",
         color: theme.sub.main,
         borderRadius: "8px",
+        justifySelf: "flex-start"
       }}
     >
       <ButtonContainer>

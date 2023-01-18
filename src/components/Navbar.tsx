@@ -11,76 +11,72 @@ import ModesStack from "./ModesStack";
 function Navbar() {
   const theme = useTheme();
   return (
-    <Box display={"flex"} flexDirection={"column"} gap={"24px"}>
-      <Stack
-        padding={" 5px 0"}
-        direction={"row"}
-        justifyContent={"space-between"}
+    <Stack
+      padding={" 5px 0"}
+      direction={"row"}
+      justifyContent={"space-between"}
+      alignItems={"center"}
+    >
+      <Box
+        padding={0}
+        display={"flex"}
+        flexDirection={"row"}
+        gap={1}
+        color={"white"}
         alignItems={"center"}
       >
+        <MemoMtLogo height={"24px"} width="40px" fill={theme.caret.main} />
         <Box
-          padding={0}
-          display={"flex"}
-          flexDirection={"row"}
-          gap={1}
-          color={"white"}
-          alignItems={"center"}
+          sx={{
+            display: {
+              xs: "none",
+              sm: "block",
+            },
+          }}
+          position={"relative"}
         >
-          <MemoMtLogo height={"24px"} width="40px" fill={theme.caret.main} />
-          <Box
-            sx={{
-              display: {
-                xs: "none",
-                sm: "block",
-              },
-            }}
-            position={"relative"}
+          <Typography
+            fontSize={10}
+            variant="caption"
+            position={"absolute"}
+            left={0}
+            top={-5}
+            color={theme.sub.main}
           >
-            <Typography
-              fontSize={10}
-              variant="caption"
-              position={"absolute"}
-              left={0}
-              top={-5}
-              color={theme.sub.main}
-            >
-              monkeysee
+            monkeysee
+          </Typography>
+          <Typography variant="h4">monkeytype</Typography>
+        </Box>
+        <IconButton>
+          <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
+        </IconButton>
+        <IconButton>
+          <MemoCrown height={20} width={20} color={theme.sub.main} />
+        </IconButton>
+        <IconButton>
+          <SettingsIcon fontSize="small" htmlColor={theme.sub.main} />
+        </IconButton>
+      </Box>
+      <Stack direction={"row"} spacing={1}>
+        <Box>
+          <IconButton>
+            <PersonRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
+            <Typography variant="caption" color={theme.sub.main}>
+              yash82
             </Typography>
-            <Typography variant="h4">monkeytype</Typography>
-          </Box>
-          <IconButton>
-            <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
           </IconButton>
           <IconButton>
-            <MemoCrown height={20} width={20} color={theme.sub.main} />
+            <NotificationsRoundedIcon
+              fontSize="small"
+              htmlColor={theme.sub.main}
+            />
           </IconButton>
           <IconButton>
-            <SettingsIcon fontSize="small" htmlColor={theme.sub.main} />
+            <LogoutIcon fontSize="small" htmlColor={theme.sub.main} />
           </IconButton>
         </Box>
-        <Stack direction={"row"} spacing={1}>
-          <Box>
-            <IconButton>
-              <PersonRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
-              <Typography variant="caption" color={theme.sub.main}>
-                yash82
-              </Typography>
-            </IconButton>
-            <IconButton>
-              <NotificationsRoundedIcon
-                fontSize="small"
-                htmlColor={theme.sub.main}
-              />
-            </IconButton>
-            <IconButton>
-              <LogoutIcon fontSize="small" htmlColor={theme.sub.main} />
-            </IconButton>
-          </Box>
-        </Stack>
       </Stack>
-
-      <ModesStack />
-    </Box>
+    </Stack>
   );
 }
 
