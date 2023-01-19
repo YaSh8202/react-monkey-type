@@ -6,6 +6,7 @@ import Navbar from "./components/Navbar";
 import TestWords from "./components/TestWords";
 import Footer from "./components/Footer";
 import ModesStack from "./components/ModesStack";
+import TestBox from "./components/TestBox";
 
 function App() {
   const theme = useTheme();
@@ -21,19 +22,19 @@ function App() {
       flexDirection={"column"}
     >
       <Container
+        disableGutters={false}
         sx={{
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           height: "100%",
           flex: 1,
-          padding: "0px",
         }}
       >
         <Navbar />
         <Box display={"flex"} flexDirection={"column"} flex={1} my={"24px"}>
           <ModesStack />
-          <TestWords />
+          <TestBox />
         </Box>
         <Footer />
       </Container>

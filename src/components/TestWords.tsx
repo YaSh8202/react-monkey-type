@@ -4,6 +4,8 @@ import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import React from "react";
 import RefreshIcon from "@mui/icons-material/Refresh";
+import { useSelector } from "react-redux";
+import { selectWordsList } from "../store/testSlice";
 
 const sentence = `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore
 laborum repudiandae ea sequi! Laboriosam, maxime fugit! Quo id
@@ -16,14 +18,14 @@ const words = sentence.split(" ");
 const Caret = styled("span")(({ theme }) => ({
   position: "absolute",
   display: "inline-block",
-  width: "2px",
+  width: "2.5px",
   height: "26px",
   "&:after": {
     content: '""',
     color: theme.caret.main,
     position: "absolute",
     top: 5,
-    left: -5,
+    left: 55,
     width: "100%",
     height: "100%",
     animation: `caret 1s infinite`,
@@ -44,6 +46,7 @@ const Caret = styled("span")(({ theme }) => ({
 
 function TestWords() {
   const theme = useTheme();
+  const wordsList = useSelector(selectWordsList);
 
   return (
     <Box
@@ -54,23 +57,31 @@ function TestWords() {
         flexDirection: "column",
       }}
     >
-      <Box display={"flex"} flexDirection={"row"} gap="8px" flexWrap={"wrap"}>
+      <Box
+        height={"120px"}
+        overflow={"hidden"}
+        display={"flex"}
+        flexDirection={"row"}
+        columnGap={"8px"}
+        flexWrap={"wrap"}
+      >
         <Caret />
-        {words.map((word, index) => (
-          <div>
+        {wordsList.map((word, index) => (
+          <Box key={index} >
             {word.split("").map((letter, index) => (
               <span
+                key={index}
                 style={{
                   color: theme.sub.main,
                   fontSize: "24px",
                   fontWeight: 400,
+                  lineHeight: "40px",
                 }}
               >
                 {letter}
               </span>
             ))}
-            <span style={{ color: theme.sub.main }}> </span>
-          </div>
+          </Box>
         ))}
       </Box>
       <IconButton sx={{ margin: "12px auto" }}>
