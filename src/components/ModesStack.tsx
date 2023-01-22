@@ -7,6 +7,7 @@ import Stack from "@mui/material/Stack";
 import TagIcon from "@mui/icons-material/Tag";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { Box } from "@mui/material";
+import { useAppDispatch, useAppSelector } from "../store/store";
 const CustomButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== "active",
 })<{ active?: boolean }>(({ theme, active }) => ({
@@ -62,6 +63,9 @@ const ButtonContainer = styled(Stack)(({ theme }) => ({
 }));
 function ModesStack() {
   const theme = useTheme();
+  const isRunning = useAppSelector((state) => state.test.isRunning);
+  const time = useAppSelector((state) => state.test.time);
+  const dispatch = useAppDispatch();
 
   return (
     <Stack
@@ -78,7 +82,7 @@ function ModesStack() {
         margin: "0 auto",
         color: theme.sub.main,
         borderRadius: "8px",
-        justifySelf: "flex-start"
+        justifySelf: "flex-start",
       }}
     >
       <ButtonContainer>
@@ -106,10 +110,20 @@ function ModesStack() {
         </CustomButton>
       </ButtonContainer>
       <ButtonContainer>
-        <CustomButton active>15</CustomButton>
+        {/* <CustomButton active>15</CustomButton>
         <CustomButton>30</CustomButton>
         <CustomButton>60</CustomButton>
-        <CustomButton>120</CustomButton>
+        <CustomButton>120</CustomButton> */}
+        {[15, 30, 60, 120].map((t) => {
+          return (
+            <CustomButton
+              active={t === time}
+              onClick={() => dispatch({ type: "test/setTime", payload: t })}
+            >
+              {t}
+            </CustomButton>
+          );
+        })}
       </ButtonContainer>
     </Stack>
   );

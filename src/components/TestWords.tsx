@@ -1,21 +1,15 @@
 import Box from "@mui/material/Box";
-import IconButton from "@mui/material/IconButton";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
 import React from "react";
-import RefreshIcon from "@mui/icons-material/Refresh";
 import { useSelector } from "react-redux";
 import { selectWordsList } from "../store/testSlice";
+import { useAppDispatch, useAppSelector } from "../store/store";
 
-const sentence = `Lorem ipsum dolor sit, amet consectetur adipisicing elit. Tempore
-laborum repudiandae ea sequi! Laboriosam, maxime fugit! Quo id
-repudiandae nam impedit neque delectus praesentium vero numquam
-asperiores? Quod sint libero culpa aliquid quia suscipit placeat
-tempore, voluptate est`;
-
-const words = sentence.split(" ");
-
-const Caret = styled("span")(({ theme }) => ({
+const Caret = styled("span", {
+  shouldForwardProp: (prop) => prop !== "left",
+  // shouldForwardProp: (prop) => prop !== "top",
+})<{ left: number; top: number }>(({ theme, top, left }) => ({
   position: "absolute",
   display: "inline-block",
   width: "2.5px",
@@ -24,8 +18,8 @@ const Caret = styled("span")(({ theme }) => ({
     content: '""',
     color: theme.caret.main,
     position: "absolute",
-    top: 5,
-    left: 55,
+    top: top,
+    left: left,
     width: "100%",
     height: "100%",
     animation: `caret 1s infinite`,
@@ -44,9 +38,66 @@ const Caret = styled("span")(({ theme }) => ({
   },
 }));
 
+function FocusInside() {
+  return (
+    <Box
+      position={"absolute"}
+      sx={{
+        backdropFilter: "blur(4px)",
+        background: "rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Typography variant="h6" color={"white"}>
+        Click here or start typing to focus
+      </Typography>
+    </Box>
+  );
+}
+
+const StyledWord = styled("span", {
+  shouldForwardProp: (prop) => prop !== "correct" && prop !== "active",
+})<{
+  correct: boolean | undefined;
+  active: boolean;
+}>(({ theme, correct, active }) => ({
+  color: correct
+    ? theme.main.main
+    : correct === false
+    ? theme.error.main
+    : theme.sub.main,
+  fontSize: "24px",
+  fontWeight: 400,
+  lineHeight: "40px",
+  textDecoration: active ? "underline" : "none",
+}));
+
+const Word = ({
+  text,
+  active,
+  correct,
+}: {
+  text: string;
+  active: boolean;
+  correct: boolean | undefined;
+}) => (
+  <StyledWord correct={correct} active={active}>
+    {text}
+  </StyledWord>
+);
+
+const MemoizedWord = React.memo(Word);
+
 function TestWords() {
-  const theme = useTheme();
   const wordsList = useSelector(selectWordsList);
+  const correctWords = useAppSelector((state) => state.test.correctWords);
+  const currentWordIndex = useAppSelector(
+    (state) => state.test.currentWordIndex
+  );
 
   return (
     <Box
@@ -64,29 +115,20 @@ function TestWords() {
         flexDirection={"row"}
         columnGap={"8px"}
         flexWrap={"wrap"}
+        position={"relative"}
       >
-        <Caret />
+        {/* <FocusInside /> */}
+        {/* <Caret left={caretPosition.left} top={caretPosition.top} /> */}
         {wordsList.map((word, index) => (
-          <Box key={index} >
-            {word.split("").map((letter, index) => (
-              <span
-                key={index}
-                style={{
-                  color: theme.sub.main,
-                  fontSize: "24px",
-                  fontWeight: 400,
-                  lineHeight: "40px",
-                }}
-              >
-                {letter}
-              </span>
-            ))}
+          <Box key={index}>
+            <MemoizedWord
+              text={word}
+              active={currentWordIndex === index}
+              correct={correctWords[index]}
+            />
           </Box>
         ))}
       </Box>
-      <IconButton sx={{ margin: "12px auto" }}>
-        <RefreshIcon htmlColor={theme.sub.main} />
-      </IconButton>
     </Box>
   );
 }

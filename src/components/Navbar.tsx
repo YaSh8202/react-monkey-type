@@ -6,7 +6,6 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-import ModesStack from "./ModesStack";
 
 function Navbar() {
   const theme = useTheme();
