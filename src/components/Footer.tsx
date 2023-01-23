@@ -1,10 +1,16 @@
-import { Box, Button, Link, useTheme } from "@mui/material";
+import { Box, Link, useTheme } from "@mui/material";
 import Stack from "@mui/material/Stack";
 import React from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
+import { useAppDispatch, useAppSelector } from "../store/store";
+import { setTheme } from "../store/themeSlice";
+import { Themes } from "../styles/theme";
 function Footer() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const currentTheme = useAppSelector((state) => state.theme.theme);
+  console.log(Object.keys(Themes));
   return (
     <Box
       height={80}
@@ -46,6 +52,9 @@ function Footer() {
         </Stack>
         <Stack direction={"row"}>
           <Box
+            onClick={() => {
+              dispatch(setTheme(Themes.joker));
+            }}
             sx={{
               background: "transparent",
               color: theme.sub.main,
@@ -61,7 +70,7 @@ function Footer() {
             }}
           >
             <PaletteRoundedIcon sx={{ padding: "1.5px" }} fontSize="small" />
-            Change Theme
+            {currentTheme}
           </Box>
         </Stack>
       </Stack>

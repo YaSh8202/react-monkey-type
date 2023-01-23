@@ -1,12 +1,13 @@
 import React from "react";
 import "./App.css";
 import { Box, Container } from "@mui/material";
-import { useTheme } from "@mui/material/styles";
+import { ThemeProvider, useTheme } from "@mui/material/styles";
 import Navbar from "./components/Navbar";
-import TestWords from "./components/TestWords";
 import Footer from "./components/Footer";
 import ModesStack from "./components/ModesStack";
 import TestBox from "./components/TestBox";
+import { getTheme } from "./styles/theme";
+import { useAppSelector } from "./store/store";
 
 function App() {
   const theme = useTheme();
@@ -41,5 +42,16 @@ function App() {
     </Box>
   );
 }
+
+export const AppWithTheme = () => {
+  // const theme = "dracula";
+  const theme = useAppSelector((state) => state.theme.theme);
+
+  return (
+    <ThemeProvider theme={getTheme(theme)}>
+      <App />
+    </ThemeProvider>
+  );
+};
 
 export default App;

@@ -1,4 +1,5 @@
 import { createTheme } from "@mui/material/styles";
+import { CustomTheme } from "../../typings";
 
 declare module "@mui/material/styles" {
   interface Theme {
@@ -79,73 +80,84 @@ const oneDarkTheme = {
   errorExtraColor: "#d62436",
   colorfulErrorColor: "#d62436",
   colorfulErrorExtraColor: "#ff0019",
-};
+} as CustomTheme;
 
-export const oneDark = createTheme({
-  background: {
-    main: oneDarkTheme.bgColor,
-  },
-  main: {
-    main: oneDarkTheme.mainColor,
-  },
-  caret: {
-    main: oneDarkTheme.caretColor,
-  },
-  sub: {
-    main: oneDarkTheme.subColor,
-    alt: oneDarkTheme.subAltColor,
-  },
-  text: {
-    main: oneDarkTheme.textColor,
-  },
-  error: {
-    main: oneDarkTheme.errorColor,
-    extra: oneDarkTheme.errorExtraColor,
-    colorful: oneDarkTheme.colorfulErrorColor,
-    colorfulExtra: oneDarkTheme.colorfulErrorExtraColor,
-  },
-  palette: {
-    primary: {
-      main: "#fff",
-      darker: "#053e85",
+const dracula = {
+  bgColor: "#282a36",
+  caretColor: "#f2f2f2",
+  mainColor: "#f2f2f2",
+  subColor: "#bd93f9",
+  subAltColor: "#20222c",
+  textColor: "#f2f2f2",
+  errorColor: "#f758a0",
+  errorExtraColor: "#732e51",
+  colorfulErrorColor: "#f758a0",
+  colorfulErrorExtraColor: "#732e51",
+} as CustomTheme;
+
+const joker = {
+  bgColor: "#1a0e25",
+  mainColor: "#99de1e",
+  caretColor: "#99de1e",
+  subColor: "#7554a3",
+  subAltColor: "#14081f",
+  textColor: "#e9e2f5",
+  errorColor: "#e32b2b",
+  errorExtraColor: "#a62626",
+  colorfulErrorColor: "#e32b2b",
+  colorfulErrorExtraColor: "#a62626",
+} as CustomTheme;
+
+function createThemeFunc(theme: CustomTheme) {
+  return createTheme({
+    background: {
+      main: theme.bgColor,
     },
-    neutral: {
-      main: "#64748B",
-      contrastText: "#fff",
+    main: {
+      main: theme.mainColor,
     },
-  },
-});
-export const theme = createTheme({
-  background: {
-    main: "#282a36",
-  },
-  main: {
-    main: "#f2f2f2",
-  },
-  caret: {
-    main: "#f2f2f2",
-  },
-  sub: {
-    main: "#bd93f9",
-    alt: "#20222c",
-  },
-  text: {
-    main: "#f2f2f2",
-  },
-  error: {
-    main: "#f758a0",
-    extra: "#732e51",
-    colorful: "#f758a0",
-    colorfulExtra: "#732e51",
-  },
-  palette: {
-    primary: {
-      main: "#fff",
-      darker: "#053e85",
+    caret: {
+      main: theme.caretColor,
     },
-    neutral: {
-      main: "#64748B",
-      contrastText: "#fff",
+    sub: {
+      main: theme.subColor,
+      alt: theme.subAltColor,
     },
-  },
-});
+    text: {
+      main: theme.textColor,
+    },
+    error: {
+      main: theme.errorColor,
+      extra: theme.errorExtraColor,
+      colorful: theme.colorfulErrorColor,
+      colorfulExtra: theme.colorfulErrorExtraColor,
+    },
+    palette: {
+      primary: {
+        main: "#fff",
+        darker: "#053e85",
+      },
+      neutral: {
+        main: "#64748B",
+        contrastText: "#fff",
+      },
+    },
+  });
+}
+
+export enum Themes {
+  oneDark = "oneDark",
+  dracula = "dracula",
+  joker = "joker",
+}
+
+export function getTheme(theme: Themes) {
+  switch (theme) {
+    case Themes.dracula:
+      return createThemeFunc(dracula);
+    case Themes.joker:
+      return createThemeFunc(joker);
+    default:
+      return createThemeFunc(oneDarkTheme);
+  }
+}
