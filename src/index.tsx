@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import "./index.css";
 import App from "./App";
 import { ThemeProvider } from "@mui/material/styles";
-import { theme } from "./styles/theme";
+import { oneDark, theme } from "./styles/theme";
 import { CssBaseline } from "@mui/material";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
@@ -14,7 +14,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <ThemeProvider theme={theme}>
+      <ThemeProvider theme={oneDark}>
         <CssBaseline />
         <App />
       </ThemeProvider>

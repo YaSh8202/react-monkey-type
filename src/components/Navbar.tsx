@@ -44,7 +44,7 @@ function Navbar() {
           >
             monkeysee
           </Typography>
-          <Typography variant="h4">monkeytype</Typography>
+          <Typography color={theme.text.main} variant="h4">monkeytype</Typography>
         </Box>
         <IconButton>
           <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />

@@ -8,12 +8,20 @@ import TagIcon from "@mui/icons-material/Tag";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../store/store";
+import {
+  setMode2,
+  toggleNumbers,
+  togglePunctuation,
+  updateTime,
+} from "../store/testSlice";
+import { TimeOptionsType } from "../../typings";
+
 const CustomButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== "active",
 })<{ active?: boolean }>(({ theme, active }) => ({
   textTransform: "none",
   backgroundColor: "transparent",
-  color: active ? theme.text.main : theme.sub.main,
+  color: active ? theme.main.main : theme.sub.main,
   outline: "none",
   border: "none",
   fontWeight: "lighter",
@@ -65,8 +73,11 @@ function ModesStack() {
   const theme = useTheme();
   const isRunning = useAppSelector((state) => state.test.isRunning);
   const time = useAppSelector((state) => state.test.time);
-  const dispatch = useAppDispatch();
+  const punctuation = useAppSelector((state) => state.test.punctuation);
+  const numbers = useAppSelector((state) => state.test.numbers);
 
+  const mode2 = useAppSelector((state) => state.test.mode2);
+  const dispatch = useAppDispatch();
   return (
     <Stack
       sx={{
@@ -83,42 +94,74 @@ function ModesStack() {
         color: theme.sub.main,
         borderRadius: "8px",
         justifySelf: "flex-start",
+        "@keyframes fadeOut": {
+          "0%": {
+            opacity: 1,
+          },
+          "100%": {
+            opacity: 0,
+          },
+        },
+        "@keyframes fadeIn": {
+          "0%": {
+            opacity: 0,
+          },
+          "100%": {
+            opacity: 1,
+          },
+        },
+        animation: isRunning
+          ? "fadeOut 0.5s ease-in-out forwards"
+          : "fadeIn 0.5s ease-in-out forwards",
       }}
     >
       <ButtonContainer>
-        <CustomButton>
+        <CustomButton
+          onClick={() => dispatch(togglePunctuation())}
+          active={punctuation}
+        >
           <AlternateEmailIcon fontSize="small" sx={{ padding: 0.35 }} />
           punctuation
         </CustomButton>
-        <CustomButton>
+
+        <CustomButton
+          onClick={() => dispatch(toggleNumbers())}
+          active={numbers}
+        >
           <TagIcon fontSize="small" sx={{ padding: 0.35 }} />
           numbers
         </CustomButton>
       </ButtonContainer>
       <ButtonContainer>
-        <CustomButton active>
+        <CustomButton
+          active={mode2 === "time"}
+          onClick={() => dispatch(setMode2("time"))}
+        >
           <WatchLaterIcon fontSize="small" sx={{ padding: 0.35 }} />
           time
         </CustomButton>
-        <CustomButton>
+        <CustomButton
+          active={mode2 === "words"}
+          onClick={() => dispatch(setMode2("words"))}
+        >
           <HdrAutoIcon fontSize="small" sx={{ padding: 0.35 }} />
           words
         </CustomButton>
-        <CustomButton>
+        <CustomButton
+          active={mode2 === "quote"}
+          onClick={() => dispatch(setMode2("quote"))}
+        >
           <FormatQuoteIcon fontSize="small" sx={{ padding: 0.35 }} />
           quote
         </CustomButton>
       </ButtonContainer>
       <ButtonContainer>
-        {/* <CustomButton active>15</CustomButton>
-        <CustomButton>30</CustomButton>
-        <CustomButton>60</CustomButton>
-        <CustomButton>120</CustomButton> */}
         {[15, 30, 60, 120].map((t) => {
           return (
             <CustomButton
+              key={t}
               active={t === time}
-              onClick={() => dispatch({ type: "test/setTime", payload: t })}
+              onClick={() => dispatch(updateTime(t as TimeOptionsType))}
             >
               {t}
             </CustomButton>

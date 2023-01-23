@@ -66,13 +66,14 @@ const StyledWord = styled("span", {
   active: boolean;
 }>(({ theme, correct, active }) => ({
   color: correct
-    ? theme.main.main
+    ? theme.text.main
     : correct === false
     ? theme.error.main
     : theme.sub.main,
   fontSize: "24px",
-  fontWeight: 400,
+  fontWeight: 300,
   lineHeight: "40px",
+  letterSpacing: "1px",
   textDecoration: active ? "underline" : "none",
 }));
 

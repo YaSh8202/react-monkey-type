@@ -3,6 +3,7 @@ import React, { useEffect } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
+  accuracySelector,
   incrementTimer,
   resetTest,
   setUserText,
@@ -18,7 +19,7 @@ const StyledTextField = styled(
   {}
 )<{}>(({ theme }) => ({
   input: {
-    color: theme.caret.main,
+    color: theme.sub.main,
     fontSize: "1.5rem",
   },
   label: {
@@ -39,6 +40,7 @@ function TestBox() {
   const wpm = useAppSelector((state) => state.test.wpm);
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
+  const accuracy = useAppSelector(accuracySelector);
 
   useEffect(() => {
     let id: NodeJS.Timer;
@@ -74,17 +76,35 @@ function TestBox() {
         position: "relative",
       }}
     >
-      <Stack direction={"row"} justifyContent={"space-between"}>
-        <Typography color={"white"}>{timerCount}</Typography>
-        <Typography color={"white"}>{wpm} WPM</Typography>
+      <Stack
+        sx={{
+          opacity:
+            document.activeElement === inputRef.current || timerCount >= time
+              ? 1
+              : 0,
+        }}
+        direction={"row"}
+        justifyContent={"space-between"}
+      >
+        <Typography variant="h5" color={theme.main.main}>
+          {time - timerCount}
+        </Typography>
+        {/* <Typography variant="h5" color={theme.main.main}>
+          {accuracy ? `${accuracy}%` : "0%"}
+        </Typography> */}
+        <Typography variant="h5" color={theme.main.main}>
+          {wpm} WPM
+        </Typography>
       </Stack>
+
       <TestWords />
       <IconButton
+        tabIndex={1}
         onClick={() => {
           dispatch(resetTest());
           inputRef.current?.focus();
         }}
-        sx={{ margin: "12px auto" }}
+        sx={{ margin: "12px auto", padding: "8px" }}
       >
         <RefreshIcon htmlColor={theme.sub.main} />
       </IconButton>
@@ -94,6 +114,7 @@ function TestBox() {
         maxRows={1}
         variant="filled"
         InputLabelProps={{ shrink: false }}
+        tabIndex={0}
         sx={{
           width: "50%",
           maxWidth: "300px",
@@ -103,6 +124,7 @@ function TestBox() {
         value={userText}
         onChange={processInput}
         disabled={timerCount >= time}
+        autoFocus
       />
     </Box>
   );
