@@ -1,14 +1,26 @@
-import { configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import testSliceReducer from "./testSlice";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import themeSlice from "./themeSlice";
+import storage from "redux-persist/lib/storage";
+import thunk from "redux-thunk";
+import { persistReducer, persistStore } from "redux-persist";
+
+const persistConfig = {
+  key: "root",
+  storage,
+};
+const persistedReducer = persistReducer(
+  persistConfig,
+  combineReducers({ theme: themeSlice, test: testSliceReducer })
+);
 
 export const store = configureStore({
-  reducer: {
-    test: testSliceReducer,
-    theme: themeSlice,
-  },
+  reducer: persistedReducer,
+  middleware: [thunk],
 });
+
+export const persistor = persistStore(store);
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
 export type RootState = ReturnType<typeof store.getState>;
