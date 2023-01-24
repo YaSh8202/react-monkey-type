@@ -43,6 +43,10 @@ function TestBox() {
   // const accuracy = useAppSelector(accuracySelector);
 
   useEffect(() => {
+    dispatch(resetTest());
+  }, [dispatch]);
+
+  useEffect(() => {
     let id: NodeJS.Timer;
     if (isRunning) {
       id = setInterval(() => {
