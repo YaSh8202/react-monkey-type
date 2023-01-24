@@ -3,7 +3,6 @@ import React, { useEffect } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
-  accuracySelector,
   incrementTimer,
   resetTest,
   setUserText,
@@ -40,7 +39,7 @@ function TestBox() {
   const wpm = useAppSelector((state) => state.test.wpm);
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
-  const accuracy = useAppSelector(accuracySelector);
+  // const accuracy = useAppSelector(accuracySelector);
 
   useEffect(() => {
     let id: NodeJS.Timer;

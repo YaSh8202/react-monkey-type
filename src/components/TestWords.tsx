@@ -1,63 +1,62 @@
 import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import { styled, useTheme } from "@mui/material/styles";
+import { styled } from "@mui/material/styles";
 import React from "react";
 import { useSelector } from "react-redux";
 import { selectWordsList } from "../store/testSlice";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import { useAppSelector } from "../store/store";
 
-const Caret = styled("span", {
-  shouldForwardProp: (prop) => prop !== "left",
-  // shouldForwardProp: (prop) => prop !== "top",
-})<{ left: number; top: number }>(({ theme, top, left }) => ({
-  position: "absolute",
-  display: "inline-block",
-  width: "2.5px",
-  height: "26px",
-  "&:after": {
-    content: '""',
-    color: theme.caret.main,
-    position: "absolute",
-    top: top,
-    left: left,
-    width: "100%",
-    height: "100%",
-    animation: `caret 1s infinite`,
-    backgroundColor: theme.caret.main,
-  },
-  "@keyframes caret": {
-    "0%": {
-      opacity: 1,
-    },
-    "50%": {
-      opacity: 0,
-    },
-    "100%": {
-      opacity: 1,
-    },
-  },
-}));
+// const Caret = styled("span", {
+//   shouldForwardProp: (prop) => prop !== "left",
+//   // shouldForwardProp: (prop) => prop !== "top",
+// })<{ left: number; top: number }>(({ theme, top, left }) => ({
+//   position: "absolute",
+//   display: "inline-block",
+//   width: "2.5px",
+//   height: "26px",
+//   "&:after": {
+//     content: '""',
+//     color: theme.caret.main,
+//     position: "absolute",
+//     top: top,
+//     left: left,
+//     width: "100%",
+//     height: "100%",
+//     animation: `caret 1s infinite`,
+//     backgroundColor: theme.caret.main,
+//   },
+//   "@keyframes caret": {
+//     "0%": {
+//       opacity: 1,
+//     },
+//     "50%": {
+//       opacity: 0,
+//     },
+//     "100%": {
+//       opacity: 1,
+//     },
+//   },
+// }));
 
-function FocusInside() {
-  return (
-    <Box
-      position={"absolute"}
-      sx={{
-        backdropFilter: "blur(4px)",
-        background: "rgba(0, 0, 0, 0.1)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        height: "100%",
-        width: "100%",
-      }}
-    >
-      <Typography variant="h6" color={"white"}>
-        Click here or start typing to focus
-      </Typography>
-    </Box>
-  );
-}
+// function FocusInside() {
+//   return (
+//     <Box
+//       position={"absolute"}
+//       sx={{
+//         backdropFilter: "blur(4px)",
+//         background: "rgba(0, 0, 0, 0.1)",
+//         display: "flex",
+//         justifyContent: "center",
+//         alignItems: "center",
+//         height: "100%",
+//         width: "100%",
+//       }}
+//     >
+//       <Typography variant="h6" color={"white"}>
+//         Click here or start typing to focus
+//       </Typography>
+//     </Box>
+//   );
+// }
 
 const StyledWord = styled("span", {
   shouldForwardProp: (prop) => prop !== "correct" && prop !== "active",
