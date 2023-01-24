@@ -44,34 +44,42 @@ function Navbar() {
           >
             monkeysee
           </Typography>
-          <Typography color={theme.text.main} variant="h4">monkeytype</Typography>
+          <Typography color={theme.text.main} variant="h4">
+            monkeytype
+          </Typography>
         </Box>
         <IconButton>
-          <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
+          <KeyboardRoundedIcon
+            fontSize="small"
+            htmlColor={theme.menuBtn["1"]}
+          />
         </IconButton>
         <IconButton>
-          <MemoCrown height={20} width={20} color={theme.sub.main} />
+          <MemoCrown height={20} width={20} color={theme.menuBtn["2"]} />
         </IconButton>
         <IconButton>
-          <SettingsIcon fontSize="small" htmlColor={theme.sub.main} />
+          <SettingsIcon fontSize="small" htmlColor={theme.menuBtn["3"]} />
         </IconButton>
       </Box>
       <Stack direction={"row"} spacing={1}>
         <Box>
           <IconButton>
-            <PersonRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
-            <Typography variant="caption" color={theme.sub.main}>
+            <PersonRoundedIcon
+              fontSize="small"
+              htmlColor={theme.menuBtn["4"]}
+            />
+            <Typography variant="caption" color={theme.menuBtn["4"]}>
               yash82
             </Typography>
           </IconButton>
           <IconButton>
             <NotificationsRoundedIcon
               fontSize="small"
-              htmlColor={theme.sub.main}
+              htmlColor={theme.menuBtn["5"]}
             />
           </IconButton>
           <IconButton>
-            <LogoutIcon fontSize="small" htmlColor={theme.sub.main} />
+            <LogoutIcon fontSize="small" htmlColor={theme.menuBtn["6"]} />
           </IconButton>
         </Box>
       </Stack>

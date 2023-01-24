@@ -4,8 +4,9 @@ import React from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { setTheme } from "../store/themeSlice";
+import { openModal, setTheme } from "../store/themeSlice";
 import { Themes } from "../styles/theme";
+import ThemeModal from "./ThemeModal";
 function Footer() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
@@ -53,7 +54,7 @@ function Footer() {
         <Stack direction={"row"}>
           <Box
             onClick={() => {
-              dispatch(setTheme(Themes.joker));
+              dispatch(openModal());
             }}
             sx={{
               background: "transparent",
@@ -74,6 +75,7 @@ function Footer() {
           </Box>
         </Stack>
       </Stack>
+      <ThemeModal />
     </Box>
   );
 }

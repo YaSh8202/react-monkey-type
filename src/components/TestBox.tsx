@@ -24,6 +24,7 @@ const StyledTextField = styled(
   label: {
     color: "white",
   },
+  backgroundColor: theme.sub.alt,
 }));
 
 function TestBox() {

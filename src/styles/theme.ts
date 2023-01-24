@@ -25,6 +25,14 @@ declare module "@mui/material/styles" {
       colorful: React.CSSProperties["color"];
       colorfulExtra: React.CSSProperties["color"];
     };
+    menuBtn: {
+      1: React.CSSProperties["color"];
+      2: React.CSSProperties["color"];
+      3: React.CSSProperties["color"];
+      4: React.CSSProperties["color"];
+      5: React.CSSProperties["color"];
+      6: React.CSSProperties["color"];
+    };
   }
 
   interface Palette {
@@ -65,6 +73,14 @@ declare module "@mui/material/styles" {
       extra: React.CSSProperties["color"];
       colorful: React.CSSProperties["color"];
       colorfulExtra: React.CSSProperties["color"];
+    };
+    menuBtn: {
+      1: React.CSSProperties["color"];
+      2: React.CSSProperties["color"];
+      3: React.CSSProperties["color"];
+      4: React.CSSProperties["color"];
+      5: React.CSSProperties["color"];
+      6: React.CSSProperties["color"];
     };
   }
 }
@@ -108,6 +124,25 @@ const joker = {
   colorfulErrorExtraColor: "#a62626",
 } as CustomTheme;
 
+const futureFunk = {
+  bgColor: "#2e1a47",
+  mainColor: "#f7f2ea",
+  caretColor: "#f7f2ea",
+  subColor: "#c18fff",
+  subAltColor: "#27173c",
+  textColor: "#f7f2ea",
+  errorColor: "#f04e98",
+  errorExtraColor: "#bd1c66",
+  colorfulErrorColor: "#f04e98",
+  colorfulErrorExtraColor: "#bd1c66",
+  menuBtn1: "#f04e98",
+  menuBtn2: "#f8bed6",
+  menuBtn3: "#f6eb61",
+  menuBtn4: "#a4dbe8",
+  menuBtn5: "#a266ed",
+  menuBtn6: "#a266ed",
+} as CustomTheme;
+
 function createThemeFunc(theme: CustomTheme) {
   return createTheme({
     background: {
@@ -132,6 +167,14 @@ function createThemeFunc(theme: CustomTheme) {
       colorful: theme.colorfulErrorColor,
       colorfulExtra: theme.colorfulErrorExtraColor,
     },
+    menuBtn: {
+      1: theme.menuBtn1 || theme.subColor,
+      2: theme.menuBtn2 || theme.subColor,
+      3: theme.menuBtn3 || theme.subColor,
+      4: theme.menuBtn4 || theme.subColor,
+      5: theme.menuBtn5 || theme.subColor,
+      6: theme.menuBtn6 || theme.subColor,
+    },
     palette: {
       primary: {
         main: "#fff",
@@ -146,9 +189,10 @@ function createThemeFunc(theme: CustomTheme) {
 }
 
 export enum Themes {
-  oneDark = "oneDark",
+  oneDark = "onedark",
   dracula = "dracula",
   joker = "joker",
+  futureFunk = "future funk",
 }
 
 export function getTheme(theme: Themes) {
@@ -157,6 +201,8 @@ export function getTheme(theme: Themes) {
       return createThemeFunc(dracula);
     case Themes.joker:
       return createThemeFunc(joker);
+    case Themes.futureFunk:
+      return createThemeFunc(futureFunk);
     default:
       return createThemeFunc(oneDarkTheme);
   }

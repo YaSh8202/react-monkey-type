@@ -17,4 +17,10 @@ export type CustomTheme = {
   errorExtraColor: string;
   colorfulErrorColor: string;
   colorfulErrorExtraColor: string;
+  menuBtn1?: string;
+  menuBtn2?: string;
+  menuBtn3?: string;
+  menuBtn4?: string;
+  menuBtn5?: string;
+  menuBtn6?: string;
 };
