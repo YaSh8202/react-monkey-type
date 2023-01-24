@@ -1,10 +1,9 @@
 import { Box, Link, useTheme } from "@mui/material";
 import Stack from "@mui/material/Stack";
-import React from "react";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import PaletteRoundedIcon from "@mui/icons-material/PaletteRounded";
 import { useAppDispatch, useAppSelector } from "../store/store";
-import { openModal, setTheme } from "../store/themeSlice";
+import { openModal } from "../store/themeSlice";
 import { Themes } from "../styles/theme";
 import ThemeModal from "./ThemeModal";
 function Footer() {
