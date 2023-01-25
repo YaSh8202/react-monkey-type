@@ -10,7 +10,6 @@ function Footer() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const currentTheme = useAppSelector((state) => state.theme.theme);
-  console.log(Object.keys(Themes));
   return (
     <Box
       height={80}

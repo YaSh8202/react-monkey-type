@@ -10,11 +10,13 @@ import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
   setMode2,
+  setWordLength,
   toggleNumbers,
   togglePunctuation,
   updateTime,
+  wordLengthOptions,
 } from "../store/testSlice";
-import { TimeOptionsType } from "../../typings";
+import type { TimeOptionsType, Mode2 } from "../typings";
 
 const CustomButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== "active",
@@ -75,8 +77,8 @@ function ModesStack() {
   const time = useAppSelector((state) => state.test.time);
   const punctuation = useAppSelector((state) => state.test.punctuation);
   const numbers = useAppSelector((state) => state.test.numbers);
-
   const mode2 = useAppSelector((state) => state.test.mode2);
+  const wordLength = useAppSelector((state) => state.test.wordLength);
   const dispatch = useAppDispatch();
   return (
     <Stack
@@ -135,38 +137,51 @@ function ModesStack() {
       <ButtonContainer>
         <CustomButton
           active={mode2 === "time"}
-          onClick={() => dispatch(setMode2("time"))}
+          onClick={() => dispatch(setMode2("time" as Mode2.time))}
         >
           <WatchLaterIcon fontSize="small" sx={{ padding: 0.35 }} />
           time
         </CustomButton>
         <CustomButton
           active={mode2 === "words"}
-          onClick={() => dispatch(setMode2("words"))}
+          onClick={() => dispatch(setMode2("words" as Mode2.words))}
         >
           <HdrAutoIcon fontSize="small" sx={{ padding: 0.35 }} />
           words
         </CustomButton>
         <CustomButton
           active={mode2 === "quote"}
-          onClick={() => dispatch(setMode2("quote"))}
+          onClick={() => dispatch(setMode2("quote" as Mode2.quote))}
         >
           <FormatQuoteIcon fontSize="small" sx={{ padding: 0.35 }} />
           quote
         </CustomButton>
       </ButtonContainer>
       <ButtonContainer>
-        {[15, 30, 60, 120].map((t) => {
-          return (
-            <CustomButton
-              key={t}
-              active={t === time}
-              onClick={() => dispatch(updateTime(t as TimeOptionsType))}
-            >
-              {t}
-            </CustomButton>
-          );
-        })}
+        {mode2 === "time" &&
+          [15, 30, 60, 120].map((t) => {
+            return (
+              <CustomButton
+                key={t}
+                active={t === time}
+                onClick={() => dispatch(updateTime(t as TimeOptionsType))}
+              >
+                {t}
+              </CustomButton>
+            );
+          })}
+        {mode2 === "words" &&
+          wordLengthOptions.map((w) => {
+            return (
+              <CustomButton
+                key={w}
+                active={w === wordLength}
+                onClick={() => dispatch(setWordLength(w))}
+              >
+                {w}
+              </CustomButton>
+            );
+          })}
       </ButtonContainer>
     </Stack>
   );

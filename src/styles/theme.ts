@@ -1,5 +1,5 @@
 import { createTheme } from "@mui/material/styles";
-import { CustomTheme } from "../../typings";
+import { CustomTheme } from "../typings";
 
 declare module "@mui/material/styles" {
   interface Theme {

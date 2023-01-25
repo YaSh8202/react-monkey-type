@@ -1,3 +1,29 @@
+import { Mode2 } from "../typings";
+import english from "../languages/english.json";
+
+export function getWords(
+  punctuation: boolean,
+  numbers: boolean,
+  mode2: Mode2,
+  time: number,
+  wordLength: number
+) {
+  let words = [...english.words];
+  if (punctuation) {
+    words = punctuations(words);
+  }
+  if (numbers) {
+    words = numbersMode(words);
+  }
+  if (mode2 === "time") {
+    words = words.slice(0, Math.max(100, Math.floor(time / 0.6)));
+  } else if (mode2 === "words") {
+    words = words.slice(0, wordLength);
+  }
+  words.sort(() => Math.random() - 0.5);
+  return words;
+}
+
 export function punctuations(words: string[]) {
   const punctuation = [",", ".", "!", "?", ";", ":", "()", "''"];
   const newWords = [...words];
@@ -21,7 +47,7 @@ export function punctuations(words: string[]) {
   return newWords;
 }
 
-export function numbersMode(words: string[]): string[]{
+export function numbersMode(words: string[]): string[] {
   let newWordsString = "";
   for (let i = 0; i < words.length; i++) {
     newWordsString += words[i];

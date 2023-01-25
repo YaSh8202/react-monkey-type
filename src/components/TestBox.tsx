@@ -40,12 +40,14 @@ function TestBox() {
   const wpm = useAppSelector((state) => state.test.wpm);
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
+  const mode2 = useAppSelector((state) => state.test.mode2);
   // const accuracy = useAppSelector(accuracySelector);
 
   useEffect(() => {
     dispatch(resetTest());
   }, [dispatch]);
 
+  // increment timer by 1 if isRunning is true
   useEffect(() => {
     let id: NodeJS.Timer;
     if (isRunning) {
@@ -57,16 +59,21 @@ function TestBox() {
         clearInterval(id);
       };
     }
-  }, [isRunning, dispatch]);
+  }, [isRunning, dispatch, mode2]);
 
   const processInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (currentWordIndex === wordsList.length || timerCount >= time) {
+    // if test is over, return
+    if (
+      currentWordIndex === wordsList.length ||
+      (mode2 === "time" && timerCount >= time)
+    ) {
       return;
     }
-
+    // if test is not running, start it
     if (!isRunning) {
       dispatch(startTest());
     }
+
     dispatch(setUserText(e.target.value));
   };
 
@@ -90,9 +97,23 @@ function TestBox() {
         direction={"row"}
         justifyContent={"space-between"}
       >
-        <Typography variant="h5" color={theme.main.main}>
-          {time - timerCount}
-        </Typography>
+        {mode2 === "time" && (
+          <Typography variant="h5" color={theme.main.main}>
+            {time - timerCount}
+          </Typography>
+        )}
+        {mode2 === "words" && (
+          <Typography
+            sx={{
+              opacity: timerCount > 0 ? 1 : 0,
+            }}
+            variant="h5"
+            color={theme.main.main}
+          >
+            {`${currentWordIndex + 1}/${wordsList.length}`}
+          </Typography>
+        )}
+
         {/* <Typography variant="h5" color={theme.main.main}>
           {accuracy ? `${accuracy}%` : "0%"}
         </Typography> */}
@@ -127,7 +148,10 @@ function TestBox() {
         }}
         value={userText}
         onChange={processInput}
-        disabled={timerCount >= time}
+        disabled={
+          (mode2 === "time" && timerCount >= time) ||
+          currentWordIndex === wordsList.length
+        }
         autoFocus
       />
     </Box>

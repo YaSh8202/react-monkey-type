@@ -2,9 +2,12 @@ import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import english from "../languages/english.json";
 import { RootState } from "./store";
-import { numbersMode, punctuations } from "../util/modeHelpers";
+import { getWords } from "../util/modeHelpers";
+import { Mode2, wordLengthOptionsType } from "../typings";
 
-type Mode2 = "time" | "words" | "quote";
+// type Mode2 = "time" | "words" | "quote";
+
+export const wordLengthOptions: wordLengthOptionsType[] = [10, 25, 50, 100];
 
 export interface TestState {
   userText: string;
@@ -25,6 +28,7 @@ export interface TestState {
   punctuation: boolean;
   numbers: boolean;
   mode2: Mode2;
+  wordLength: 10 | 25 | 50 | 100;
 }
 
 const initialState: TestState = {
@@ -43,7 +47,10 @@ const initialState: TestState = {
   // currentCharIndex: 0,
   // current: "",
   // history: [],
-  mode2: "time",
+  wordLength: 25,
+  // 'Mode2' only refers to a type, but is being used as a value here.
+
+  mode2: "time" as Mode2,
   punctuation: false,
   numbers: false,
 };
@@ -65,15 +72,13 @@ export const testSlice = createSlice({
       state.timerCount = 0;
       state.currentWordIndex = 0;
       state.correctWords = [];
-      state.wordsList = (
-        state.punctuation && state.numbers
-          ? numbersMode(punctuations([...english.words]))
-          : state.punctuation
-          ? punctuations([...english.words])
-          : state.numbers
-          ? numbersMode([...english.words])
-          : [...english.words]
-      ).sort(() => Math.random() - 0.5);
+      state.wordsList = getWords(
+        state.punctuation,
+        state.numbers,
+        state.mode2,
+        state.time,
+        state.wordLength
+      );
       state.wpm = 0;
     },
     stopTest: (state) => {
@@ -86,7 +91,7 @@ export const testSlice = createSlice({
       const value = action.payload;
       if (value.endsWith(" ")) {
         if (
-          state.time <= state.timerCount ||
+          (state.mode2 === "time" && state.time <= state.timerCount) ||
           state.currentWordIndex === state.wordsList.length - 1
         ) {
           state.isRunning = false;
@@ -118,7 +123,7 @@ export const testSlice = createSlice({
         );
       }
 
-      if (state.timerCount >= state.time) {
+      if (state.mode2 === "time" && state.timerCount >= state.time) {
         clearInterval(action.payload);
         state.isRunning = false;
         state.userText = "";
@@ -140,6 +145,10 @@ export const testSlice = createSlice({
       state.numbers = !state.numbers;
       testSlice.caseReducers.resetTest(state);
     },
+    setWordLength(state, action: PayloadAction<wordLengthOptionsType>) {
+      state.wordLength = action.payload;
+      testSlice.caseReducers.resetTest(state);
+    },
   },
 });
 
@@ -154,6 +163,7 @@ export const {
   updateTime,
   togglePunctuation,
   toggleNumbers,
+  setWordLength,
 } = testSlice.actions;
 
 export default testSlice.reducer;

@@ -119,6 +119,7 @@ function ThemeModal() {
         <Stack direction={"column"}>
           {filteredThemes.map((t) => (
             <SelectThemeBtn
+              key={t}
               onClick={() => {
                 dispatch(setTheme(t));
               }}

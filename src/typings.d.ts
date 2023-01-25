@@ -2,9 +2,15 @@ export type TimeOptionsType = 15 | 30 | 60 | 120;
 
 export type Mode = "punctuation" | "numbers";
 
-export type Mode2 = "time" | "words" | "quote";
+// export type Mode2 = "time" | "words" | "quote";
+export enum Mode2 {
+  time = "time",
+  words = "words",
+  quote = "quote",
+}
 
-export type wordLengthOptions = 10 | 25 | 50 | 100;
+export type wordLengthOptionsType = 10 | 25 | 50 | 100;
+
 
 export type CustomTheme = {
   bgColor: string;

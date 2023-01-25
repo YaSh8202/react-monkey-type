@@ -1,6 +1,6 @@
 import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
-import React from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 import { selectWordsList } from "../store/testSlice";
 import { useAppSelector } from "../store/store";
@@ -80,15 +80,30 @@ const Word = ({
   text,
   active,
   correct,
+  containerHeight,
+  scrollContainer,
 }: {
   text: string;
   active: boolean;
   correct: boolean | undefined;
-}) => (
-  <StyledWord correct={correct} active={active}>
-    {text}
-  </StyledWord>
-);
+  containerHeight: number | undefined;
+  scrollContainer: () => void;
+}) => {
+  const wordRef = useRef<HTMLSpanElement | null>(null);
+  const t = wordRef?.current?.getBoundingClientRect();
+
+  useEffect(() => {
+    if (t?.top && containerHeight && active && t.top - containerHeight > 80) {
+      scrollContainer();
+    }
+  }, [t?.top, containerHeight, active, scrollContainer]);
+
+  return (
+    <StyledWord ref={wordRef} correct={correct} active={active}>
+      {text}
+    </StyledWord>
+  );
+};
 
 const MemoizedWord = React.memo(Word);
 
@@ -98,6 +113,22 @@ function TestWords() {
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
   );
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    containerRef.current?.scrollTo(0, 0);
+  }, [wordsList]);
+
+  const scrollContainer = useCallback(function scrollContainer() {
+    if (containerRef?.current) {
+      // containerRef.current.scrollTop += 40;
+      containerRef.current.scrollBy({
+        top: 40,
+        left: 0,
+        behavior: "smooth",
+      });
+    }
+  }, []);
 
   return (
     <Box
@@ -116,6 +147,7 @@ function TestWords() {
         columnGap={"8px"}
         flexWrap={"wrap"}
         position={"relative"}
+        ref={containerRef}
       >
         {/* <FocusInside /> */}
         {/* <Caret left={caretPosition.left} top={caretPosition.top} /> */}
@@ -125,6 +157,10 @@ function TestWords() {
               text={word}
               active={currentWordIndex === index}
               correct={correctWords[index]}
+              containerHeight={
+                containerRef?.current?.getBoundingClientRect().top
+              }
+              scrollContainer={scrollContainer}
             />
           </Box>
         ))}

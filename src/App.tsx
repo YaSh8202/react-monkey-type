@@ -1,3 +1,6 @@
+// This code is the main component of the app, it renders the Navbar, the footer and the content of the page.
+// AppWithTheme is a wrapper that adds the theme provider to the app. The theme is set in the store.
+
 import React from "react";
 import "./App.css";
 import { Box, Container } from "@mui/material";
@@ -44,7 +47,6 @@ function App() {
 }
 
 export const AppWithTheme = () => {
-  // const theme = "dracula";
   const theme = useAppSelector((state) => state.theme.theme);
 
   return (
