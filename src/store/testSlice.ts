@@ -26,10 +26,6 @@ export interface TestState {
   wordsList: string[];
   time: 15 | 30 | 60 | 120;
   timerCount: number;
-  // caretPosition: {
-  //   left: number;
-  //   top: number;
-  // };
   currentWordIndex: number;
   correctWords: boolean[];
   wpm: number;
@@ -41,6 +37,7 @@ export interface TestState {
   mode2: Mode2;
   wordLength: 10 | 25 | 50 | 100;
   quoteLength: quoteLengthOptionsType;
+  showResult: boolean;
 }
 
 const initialState: TestState = {
@@ -50,22 +47,17 @@ const initialState: TestState = {
   time: 30,
   timerCount: 0,
   wpm: 0,
-  // caretPosition: {
-  //   left: 0,
-  //   top: 0,
-  // },
   currentWordIndex: 0,
   correctWords: [],
   // currentCharIndex: 0,
   // current: "",
   // history: [],
   wordLength: 25,
-  // 'Mode2' only refers to a type, but is being used as a value here.
-
   mode2: "time" as Mode2,
   punctuation: false,
   numbers: false,
   quoteLength: "all",
+  showResult: false,
 };
 
 export const testSlice = createSlice({
@@ -78,6 +70,7 @@ export const testSlice = createSlice({
       state.timerCount = 0;
       state.currentWordIndex = 0;
       state.correctWords = [];
+      state.showResult = false;
     },
     resetTest: (state) => {
       state.isRunning = false;
@@ -94,10 +87,12 @@ export const testSlice = createSlice({
         state.quoteLength
       );
       state.wpm = 0;
+      state.showResult = false;
     },
     stopTest: (state) => {
       state.isRunning = false;
       state.userText = "";
+      state.showResult = true;
     },
     setUserText: (state, action: PayloadAction<string>) => {
       if (!state.isRunning) return;
@@ -197,3 +192,11 @@ export const accuracySelector = (state: RootState) => {
   const correctWordsCount = correctWords.filter(Boolean).length;
   return Math.ceil((correctWordsCount / totalWords) * 100);
 };
+
+export const rawSpeedSelector = (state: RootState) => {
+  return Math.ceil(
+    state.test.correctWords.length / (state.test.timerCount / 60)
+  );
+};
+
+

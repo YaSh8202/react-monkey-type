@@ -11,9 +11,11 @@ import ModesStack from "./components/ModesStack";
 import TestBox from "./components/TestBox";
 import { getTheme } from "./styles/theme";
 import { useAppSelector } from "./store/store";
+import TestResult from "./components/TestResult";
 
 function App() {
   const theme = useTheme();
+  const showResult = useAppSelector((state) => state.test.showResult);
 
   return (
     <Box
@@ -37,8 +39,14 @@ function App() {
       >
         <Navbar />
         <Box display={"flex"} flexDirection={"column"} flex={1} my={"24px"}>
-          <ModesStack />
-          <TestBox />
+          {showResult ? (
+            <TestResult />
+          ) : (
+            <>
+              <ModesStack />
+              <TestBox />
+            </>
+          )}
         </Box>
         <Footer />
       </Container>
