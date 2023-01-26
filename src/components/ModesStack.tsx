@@ -9,7 +9,9 @@ import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
+  quoteLengthOptions,
   setMode2,
+  setQuoteLength,
   setWordLength,
   toggleNumbers,
   togglePunctuation,
@@ -39,6 +41,9 @@ const CustomButton = styled(Box, {
   transitionTimingFunction: "ease-in-out",
   "&:hover": {
     color: theme.text.main,
+  },
+  "&:active": {
+    color: theme.main.main,
   },
 }));
 
@@ -79,6 +84,7 @@ function ModesStack() {
   const numbers = useAppSelector((state) => state.test.numbers);
   const mode2 = useAppSelector((state) => state.test.mode2);
   const wordLength = useAppSelector((state) => state.test.wordLength);
+  const quoteLength = useAppSelector((state) => state.test.quoteLength);
   const dispatch = useAppDispatch();
   return (
     <Stack
@@ -177,6 +183,18 @@ function ModesStack() {
                 key={w}
                 active={w === wordLength}
                 onClick={() => dispatch(setWordLength(w))}
+              >
+                {w}
+              </CustomButton>
+            );
+          })}
+        {mode2 === "quote" &&
+          quoteLengthOptions.map((w) => {
+            return (
+              <CustomButton
+                key={w}
+                active={w === quoteLength}
+                onClick={() => dispatch(setQuoteLength(w))}
               >
                 {w}
               </CustomButton>

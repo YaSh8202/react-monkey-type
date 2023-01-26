@@ -3,11 +3,22 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import english from "../languages/english.json";
 import { RootState } from "./store";
 import { getWords } from "../util/modeHelpers";
-import { Mode2, wordLengthOptionsType } from "../typings";
+import {
+  Mode2,
+  quoteLengthOptionsType,
+  wordLengthOptionsType,
+} from "../typings";
 
 // type Mode2 = "time" | "words" | "quote";
 
 export const wordLengthOptions: wordLengthOptionsType[] = [10, 25, 50, 100];
+export const quoteLengthOptions: quoteLengthOptionsType[] = [
+  "all",
+  "short",
+  "medium",
+  "long",
+  "thicc",
+];
 
 export interface TestState {
   userText: string;
@@ -29,6 +40,7 @@ export interface TestState {
   numbers: boolean;
   mode2: Mode2;
   wordLength: 10 | 25 | 50 | 100;
+  quoteLength: quoteLengthOptionsType;
 }
 
 const initialState: TestState = {
@@ -53,6 +65,7 @@ const initialState: TestState = {
   mode2: "time" as Mode2,
   punctuation: false,
   numbers: false,
+  quoteLength: "all",
 };
 
 export const testSlice = createSlice({
@@ -77,7 +90,8 @@ export const testSlice = createSlice({
         state.numbers,
         state.mode2,
         state.time,
-        state.wordLength
+        state.wordLength,
+        state.quoteLength
       );
       state.wpm = 0;
     },
@@ -95,6 +109,7 @@ export const testSlice = createSlice({
           state.currentWordIndex === state.wordsList.length - 1
         ) {
           state.isRunning = false;
+          testSlice.caseReducers.stopTest(state);
         } else {
           state.userText = "";
         }
@@ -149,6 +164,10 @@ export const testSlice = createSlice({
       state.wordLength = action.payload;
       testSlice.caseReducers.resetTest(state);
     },
+    setQuoteLength(state, action: PayloadAction<quoteLengthOptionsType>) {
+      state.quoteLength = action.payload;
+      testSlice.caseReducers.resetTest(state);
+    },
   },
 });
 
@@ -164,6 +183,7 @@ export const {
   togglePunctuation,
   toggleNumbers,
   setWordLength,
+  setQuoteLength,
 } = testSlice.actions;
 
 export default testSlice.reducer;

@@ -110,7 +110,7 @@ function TestBox() {
             variant="h5"
             color={theme.main.main}
           >
-            {`${currentWordIndex + 1}/${wordsList.length}`}
+            {`${currentWordIndex}/${wordsList.length}`}
           </Typography>
         )}
 
@@ -136,6 +136,9 @@ function TestBox() {
       <StyledTextField
         inputRef={inputRef}
         focused={isRunning}
+        autoCapitalize="off"
+        autoCorrect="off"
+        autoComplete="off"
         maxRows={1}
         variant="filled"
         InputLabelProps={{ shrink: false }}

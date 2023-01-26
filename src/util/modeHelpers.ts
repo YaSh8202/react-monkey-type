@@ -1,14 +1,22 @@
-import { Mode2 } from "../typings";
+import { Mode2, quoteLengthOptionsType } from "../typings";
 import english from "../languages/english.json";
+import englishQuotes from "../languages/english_quotes.json";
+import { quoteLengthOptions } from "../store/testSlice";
 
+const { groups, quotes } = englishQuotes;
 export function getWords(
   punctuation: boolean,
   numbers: boolean,
   mode2: Mode2,
   time: number,
-  wordLength: number
+  wordLength: number,
+  quoteLength: quoteLengthOptionsType
 ) {
   let words = [...english.words];
+  if (mode2 === "quote") {
+    return getQuote(quoteLength).split(" ");
+  }
+
   if (punctuation) {
     words = punctuations(words);
   }
@@ -22,6 +30,18 @@ export function getWords(
   }
   words.sort(() => Math.random() - 0.5);
   return words;
+}
+
+function getQuote(length: quoteLengthOptionsType) {
+  if (length === "all")
+    return quotes[Math.floor(Math.random() * quotes.length)].text;
+
+  const groupIndex = quoteLengthOptions.findIndex((x) => x === length);
+  const group = groups[groupIndex - 1];
+  const newQuotes = [...quotes].filter(
+    (x) => group[0] <= x.length && x.length <= group[1]
+  );
+  return newQuotes[Math.floor(Math.random() * newQuotes.length)].text;
 }
 
 export function punctuations(words: string[]) {

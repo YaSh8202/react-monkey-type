@@ -3,7 +3,7 @@
 
 import React from "react";
 import "./App.css";
-import { Box, Container } from "@mui/material";
+import { Box, Container, useMediaQuery } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -48,6 +48,8 @@ function App() {
 
 export const AppWithTheme = () => {
   const theme = useAppSelector((state) => state.theme.theme);
+  // const isDark = useMediaQuery('(prefers-color-scheme: dark)');
+  // console.log(isDark)
 
   return (
     <ThemeProvider theme={getTheme(theme)}>
