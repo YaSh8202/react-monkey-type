@@ -3,7 +3,7 @@
 
 import React from "react";
 import "./App.css";
-import { Box, Container, useMediaQuery } from "@mui/material";
+import { Box, Container } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
