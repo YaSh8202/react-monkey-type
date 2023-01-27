@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../store/store";
 import {
@@ -8,7 +8,7 @@ import {
   setUserText,
   startTest,
 } from "../store/testSlice";
-import { Stack, TextField, Typography } from "@mui/material";
+import { Stack, TextField, Typography, Tooltip } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
@@ -37,15 +37,16 @@ function TestBox() {
   );
   const wordsList = useAppSelector((state) => state.test.wordsList);
   const timerCount = useAppSelector((state) => state.test.timerCount);
-  const wpm = useAppSelector((state) => state.test.wpm);
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
   const mode2 = useAppSelector((state) => state.test.mode2);
   // const accuracy = useAppSelector(accuracySelector);
+  const rerender = useRef(0);
 
   useEffect(() => {
-    dispatch(resetTest());
-  }, [dispatch]);
+    rerender.current++;
+  });
+  console.log(rerender.current);
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {
@@ -117,22 +118,44 @@ function TestBox() {
         {/* <Typography variant="h5" color={theme.main.main}>
           {accuracy ? `${accuracy}%` : "0%"}
         </Typography> */}
-        <Typography variant="h5" color={theme.main.main}>
+        {/* <Typography variant="h5" color={theme.main.main}>
           {wpm} WPM
-        </Typography>
+        </Typography> */}
       </Stack>
 
       <TestWords />
-      <IconButton
-        tabIndex={1}
-        onClick={() => {
-          dispatch(resetTest());
-          inputRef.current?.focus();
+
+      <Tooltip
+        placement="left"
+        componentsProps={{
+          tooltip: {
+            sx: {
+              backgroundColor: theme.sub.alt,
+              color: theme.main.main,
+              fontSize: "1rem",
+              padding: "4px 1rem",
+            },
+          },
+          arrow: {
+            sx: {
+              color: theme.sub.alt,
+            },
+          },
         }}
-        sx={{ margin: "12px auto", padding: "8px" }}
+        arrow
+        title="Restart test"
       >
-        <RefreshIcon htmlColor={theme.sub.main} />
-      </IconButton>
+        <IconButton
+          tabIndex={1}
+          onClick={() => {
+            dispatch(resetTest());
+            inputRef.current?.focus();
+          }}
+          sx={{ margin: "12px auto", padding: "8px" }}
+        >
+          <RefreshIcon htmlColor={theme.sub.main} />
+        </IconButton>
+      </Tooltip>
       <StyledTextField
         inputRef={inputRef}
         focused={isRunning}

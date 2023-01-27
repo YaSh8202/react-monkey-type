@@ -35,3 +35,8 @@ export type CustomTheme = {
   menuBtn5?: string;
   menuBtn6?: string;
 };
+
+export type HistoryType = {
+  time: number;
+  wpm: number;
+}

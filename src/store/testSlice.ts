@@ -38,6 +38,14 @@ export interface TestState {
   wordLength: 10 | 25 | 50 | 100;
   quoteLength: quoteLengthOptionsType;
   showResult: boolean;
+  wpmHistory: {
+    time: number;
+    wpm: number;
+  }[];
+  rawHistory: {
+    time: number;
+    wpm: number;
+  }[];
 }
 
 const initialState: TestState = {
@@ -58,6 +66,8 @@ const initialState: TestState = {
   numbers: false,
   quoteLength: "all",
   showResult: false,
+  wpmHistory: [],
+  rawHistory: [],
 };
 
 export const testSlice = createSlice({
@@ -71,6 +81,8 @@ export const testSlice = createSlice({
       state.currentWordIndex = 0;
       state.correctWords = [];
       state.showResult = false;
+      state.wpmHistory = [];
+      state.rawHistory = [];
     },
     resetTest: (state) => {
       state.isRunning = false;
@@ -88,6 +100,8 @@ export const testSlice = createSlice({
       );
       state.wpm = 0;
       state.showResult = false;
+      state.wpmHistory = [];
+      state.rawHistory = [];
     },
     stopTest: (state) => {
       state.isRunning = false;
@@ -128,15 +142,23 @@ export const testSlice = createSlice({
       if (state.timerCount === 0) {
         state.wpm = state.correctWords.filter(Boolean).length;
       } else {
-        state.wpm = Math.ceil(
-          state.correctWords.filter(Boolean).length / (state.timerCount / 60)
-        );
+        state.wpm =
+          state.correctWords.filter(Boolean).length / (state.timerCount / 60);
+        state.wpmHistory.push({
+          time: state.timerCount,
+          wpm: state.wpm,
+        });
+        state.rawHistory.push({
+          time: state.timerCount,
+          wpm: state.correctWords.length / (state.timerCount / 60),
+        });
       }
 
       if (state.mode2 === "time" && state.timerCount >= state.time) {
         clearInterval(action.payload);
         state.isRunning = false;
         state.userText = "";
+        state.showResult = true;
       }
     },
     updateTime(state, action: PayloadAction<15 | 30 | 60 | 120>) {
@@ -198,5 +220,3 @@ export const rawSpeedSelector = (state: RootState) => {
     state.test.correctWords.length / (state.test.timerCount / 60)
   );
 };
-
-

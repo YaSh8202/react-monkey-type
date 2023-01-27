@@ -8,6 +8,7 @@ import {
   rawSpeedSelector,
   resetTest,
 } from "../store/testSlice";
+import WpmChart from "./WpmChart";
 const StatBox = ({
   title,
   value,
@@ -77,9 +78,10 @@ function TestResult() {
             padding: 0,
           }}
           item
-          xs={2}
+          xs={12}
+          md={2}
         >
-          <Box>
+          <Box display={"flex"} flexDirection={"column"} >
             <Typography
               sx={{
                 fontSize: "2rem",
@@ -99,10 +101,10 @@ function TestResult() {
               variant="h2"
               color={theme.main.main}
             >
-              {wpm}
+              {Math.round(wpm)}
             </Typography>
           </Box>
-          <Box marginBottom={"1rem"}>
+          <Box marginBottom={"1rem"}  >
             <Typography
               sx={{
                 fontSize: "2rem",
@@ -152,21 +154,19 @@ function TestResult() {
             </Typography>
           </Box>
         </Grid>
-        <Grid item xs={10}>
-          <Box
-            bgcolor="lightblue"
-            height={"200px"}
-            boxSizing={"border-box"}
-          ></Box>
+        <Grid item xs={12} md={10}>
+          <Box height={"220px"} boxSizing={"border-box"}>
+            <WpmChart />
+          </Box>
           <Stack
             width={"100%"}
             direction={"row"}
             justifyContent={"space-evenly"}
-            marginTop={"1.5rem"}
+            marginTop={"1rem"}
           >
             <StatBox title={"raw"} value={rawWpm} />
             {/* <StatBox title={"consistency"} value={"82%"} /> */}
-            <StatBox title={"time"} value={timerCount.toString()+"s"} />
+            <StatBox title={"time"} value={timerCount.toString() + "s"} />
             {/* <StatBox title={"raw"} value={"85"} /> */}
           </Stack>
         </Grid>
