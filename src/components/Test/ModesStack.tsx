@@ -8,6 +8,8 @@ import TagIcon from "@mui/icons-material/Tag";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { Box } from "@mui/material";
 import { useAppDispatch, useAppSelector } from "../../store/store";
+import Grow from "@mui/material/Grow";
+
 import {
   quoteLengthOptions,
   setMode2,
@@ -102,6 +104,7 @@ function ModesStack() {
         color: theme.sub.main,
         borderRadius: "8px",
         justifySelf: "flex-start",
+        transition: "all 0.5s ease-in-out",
         "@keyframes fadeOut": {
           "0%": {
             opacity: 1,
@@ -123,23 +126,27 @@ function ModesStack() {
           : "fadeIn 0.5s ease-in-out forwards",
       }}
     >
-      <ButtonContainer>
-        <CustomButton
-          onClick={() => dispatch(togglePunctuation())}
-          active={punctuation}
-        >
-          <AlternateEmailIcon fontSize="small" sx={{ padding: 0.35 }} />
-          punctuation
-        </CustomButton>
+      {/* {mode2 !== "quote" && ( */}
+      <Grow in={mode2 !== "quote"} mountOnEnter unmountOnExit timeout={500}>
+        <ButtonContainer>
+          <CustomButton
+            onClick={() => dispatch(togglePunctuation())}
+            active={punctuation}
+          >
+            <AlternateEmailIcon fontSize="small" sx={{ padding: 0.35 }} />
+            punctuation
+          </CustomButton>
 
-        <CustomButton
-          onClick={() => dispatch(toggleNumbers())}
-          active={numbers}
-        >
-          <TagIcon fontSize="small" sx={{ padding: 0.35 }} />
-          numbers
-        </CustomButton>
-      </ButtonContainer>
+          <CustomButton
+            onClick={() => dispatch(toggleNumbers())}
+            active={numbers}
+          >
+            <TagIcon fontSize="small" sx={{ padding: 0.35 }} />
+            numbers
+          </CustomButton>
+        </ButtonContainer>
+      </Grow>
+      {/* )} */}
       <ButtonContainer>
         <CustomButton
           active={mode2 === "time"}

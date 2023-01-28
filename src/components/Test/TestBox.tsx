@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
@@ -40,13 +40,6 @@ function TestBox() {
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
   const mode2 = useAppSelector((state) => state.test.mode2);
-  // const accuracy = useAppSelector(accuracySelector);
-  const rerender = useRef(0);
-
-  useEffect(() => {
-    rerender.current++;
-  });
-  console.log(rerender.current);
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {

@@ -23,9 +23,6 @@ const accessors = {
 function WpmChart() {
   const wpmHistory = useAppSelector((state) => state.test.wpmHistory);
   const rawHistory = useAppSelector((state) => state.test.rawHistory);
-  // const time = useAppSelector((state) => state.test.time);
-  console.log(wpmHistory);
-  console.log(rawHistory);
   const theme = useTheme();
   const labelClass = useCss({
     fill: theme.sub.main,
