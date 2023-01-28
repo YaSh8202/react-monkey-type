@@ -1,5 +1,5 @@
 import React from "react";
-import { useAppSelector } from "../store/store";
+import { useAppSelector } from "../../store/store";
 import { defaultStyles } from "@visx/tooltip";
 
 import {
@@ -11,7 +11,7 @@ import {
   Tooltip,
 } from "@visx/xychart";
 import ParentSize from "@visx/responsive/lib/components/ParentSize";
-import { HistoryType } from "../typings";
+import { HistoryType } from "../../typings";
 import { useTheme } from "@mui/material";
 import { useCss } from "react-use";
 

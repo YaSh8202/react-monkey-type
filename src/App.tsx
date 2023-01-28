@@ -7,16 +7,28 @@ import { Box, Container } from "@mui/material";
 import { ThemeProvider, useTheme } from "@mui/material/styles";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import ModesStack from "./components/ModesStack";
-import TestBox from "./components/TestBox";
 import { getTheme } from "./styles/theme";
 import { useAppDispatch, useAppSelector } from "./store/store";
-import TestResult from "./components/TestResult";
 import { resetTest } from "./store/testSlice";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
+import Test from "./components/Test/Test";
+import Login from "./components/Login/Login";
+
+const router = createBrowserRouter([
+  {
+    path: "/",
+    element: <App />,
+
+    children: [
+      { path: "/", element: <Test /> },
+      { path: "/login", element: <Login /> },
+      { path: "*", element: "Not Found" },
+    ],
+  },
+]);
 
 function App() {
   const theme = useTheme();
-  const showResult = useAppSelector((state) => state.test.showResult);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -44,16 +56,7 @@ function App() {
         }}
       >
         <Navbar />
-        <Box display={"flex"} flexDirection={"column"} flex={1} my={"24px"}>
-          {showResult ? (
-            <TestResult />
-          ) : (
-            <>
-              <ModesStack />
-              <TestBox />
-            </>
-          )}
-        </Box>
+        <Outlet />
         <Footer />
       </Container>
     </Box>
@@ -67,7 +70,7 @@ export const AppWithTheme = () => {
 
   return (
     <ThemeProvider theme={getTheme(theme)}>
-      <App />
+      <RouterProvider router={router} />
     </ThemeProvider>
   );
 };

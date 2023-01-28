@@ -2,8 +2,8 @@ import Box from "@mui/material/Box";
 import { styled } from "@mui/material/styles";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
-import { selectWordsList } from "../store/testSlice";
-import { useAppSelector } from "../store/store";
+import { selectWordsList } from "../../store/testSlice";
+import { useAppSelector } from "../../store/store";
 
 // const Caret = styled("span", {
 //   shouldForwardProp: (prop) => prop !== "left",

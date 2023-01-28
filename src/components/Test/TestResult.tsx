@@ -2,12 +2,12 @@ import { Box, Grid, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import React from "react";
 import IconButton from "@mui/material/IconButton/IconButton";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   accuracySelector,
   rawSpeedSelector,
   resetTest,
-} from "../store/testSlice";
+} from "../../store/testSlice";
 import WpmChart from "./WpmChart";
 const StatBox = ({
   title,

@@ -1,13 +1,13 @@
 import Box from "@mui/material/Box";
 import React, { useEffect, useRef } from "react";
 import TestWords from "./TestWords";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   incrementTimer,
   resetTest,
   setUserText,
   startTest,
-} from "../store/testSlice";
+} from "../../store/testSlice";
 import { Stack, TextField, Typography, Tooltip } from "@mui/material";
 import { styled, useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton/IconButton";

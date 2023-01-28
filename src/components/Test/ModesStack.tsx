@@ -7,7 +7,7 @@ import Stack from "@mui/material/Stack";
 import TagIcon from "@mui/icons-material/Tag";
 import FormatQuoteIcon from "@mui/icons-material/FormatQuote";
 import { Box } from "@mui/material";
-import { useAppDispatch, useAppSelector } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   quoteLengthOptions,
   setMode2,
@@ -17,8 +17,8 @@ import {
   togglePunctuation,
   updateTime,
   wordLengthOptions,
-} from "../store/testSlice";
-import type { TimeOptionsType, Mode2 } from "../typings";
+} from "../../store/testSlice";
+import type { TimeOptionsType, Mode2 } from "../../typings";
 
 const CustomButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== "active",

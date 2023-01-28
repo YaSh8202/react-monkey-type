@@ -6,9 +6,15 @@ import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
 import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
-
+import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
+import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../store/store";
+import { resetTest } from "../store/testSlice";
 function Navbar() {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
+  const loggedIn = false;
+  const navigate = useNavigate();
   return (
     <Stack
       padding={" 5px 0"}
@@ -24,31 +30,46 @@ function Navbar() {
         color={"white"}
         alignItems={"center"}
       >
-        <MemoMtLogo height={"24px"} width="40px" fill={theme.caret.main} />
         <Box
+          onClick={() => navigate("/")}
+          display={"flex"}
+          alignItems={"center"}
+          gap={1}
           sx={{
-            display: {
-              xs: "none",
-              sm: "block",
-            },
+            cursor: "pointer",
           }}
-          position={"relative"}
         >
-          <Typography
-            fontSize={10}
-            variant="caption"
-            position={"absolute"}
-            left={0}
-            top={-5}
-            color={theme.sub.main}
+          <MemoMtLogo height={"24px"} width="40px" fill={theme.caret.main} />
+          <Box
+            sx={{
+              display: {
+                xs: "none",
+                sm: "block",
+              },
+            }}
+            position={"relative"}
           >
-            monkeysee
-          </Typography>
-          <Typography color={theme.text.main} variant="h4">
-            monkeytype
-          </Typography>
+            <Typography
+              fontSize={10}
+              variant="caption"
+              position={"absolute"}
+              left={0}
+              top={-5}
+              color={theme.sub.main}
+            >
+              monkeysee
+            </Typography>
+            <Typography color={theme.text.main} variant="h4">
+              monkeytype
+            </Typography>
+          </Box>
         </Box>
-        <IconButton>
+        <IconButton
+          onClick={() => {
+            navigate("/");
+            dispatch(resetTest());
+          }}
+        >
           <KeyboardRoundedIcon
             fontSize="small"
             htmlColor={theme.menuBtn["1"]}
@@ -63,14 +84,22 @@ function Navbar() {
       </Box>
       <Stack direction={"row"} spacing={1}>
         <Box>
-          <IconButton>
-            <PersonRoundedIcon
-              fontSize="small"
-              htmlColor={theme.menuBtn["4"]}
-            />
-            <Typography variant="caption" color={theme.menuBtn["4"]}>
-              yash82
-            </Typography>
+          <IconButton
+            sx={{
+              color: theme.sub.main,
+            }}
+          >
+            {loggedIn && (
+              <>
+                <PersonRoundedIcon
+                  fontSize="small"
+                  htmlColor={theme.menuBtn["4"]}
+                />
+                <Typography variant="caption" color={theme.menuBtn["4"]}>
+                  yash82
+                </Typography>
+              </>
+            )}
           </IconButton>
           <IconButton>
             <NotificationsRoundedIcon
@@ -78,8 +107,23 @@ function Navbar() {
               htmlColor={theme.menuBtn["5"]}
             />
           </IconButton>
-          <IconButton>
-            <LogoutIcon fontSize="small" htmlColor={theme.menuBtn["6"]} />
+          <IconButton
+            onClick={() => {
+              navigate("/login");
+            }}
+            sx={{
+              color: theme.sub.main,
+              transition: "color 0.2s",
+              "&:hover": {
+                color: theme.main.main,
+              },
+            }}
+          >
+            {loggedIn ? (
+              <LogoutIcon fontSize="small" htmlColor={theme.menuBtn["6"]} />
+            ) : (
+              <PersonOutlineOutlinedIcon />
+            )}
           </IconButton>
         </Box>
       </Stack>
