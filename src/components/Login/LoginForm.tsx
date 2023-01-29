@@ -7,12 +7,7 @@ import GoogleIcon from "@mui/icons-material/Google";
 import { signInWithEmailAndPassword, signInWithPopup } from "firebase/auth";
 import { auth, googleAuthProvider } from "../../util/firebase";
 import UsernameModal from "./UsernameModal";
-import {
-  LoginInput,
-  StyledLoginButton,
-  validateEmail,
-  validatePassword,
-} from "./Login";
+import { LoginInput, StyledLoginButton } from "./Login";
 import { UserContext } from "../../store/userContext";
 
 function LoginForm() {
@@ -20,13 +15,13 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showUsernameModal, setShowUsernameModal] = useState(false);
-  const { user, username } = useContext(UserContext);
+  const { user, username, loading } = useContext(UserContext);
 
   useEffect(() => {
-    if (user && !username) {
+    if (!loading && user && !username) {
       setShowUsernameModal(true);
     }
-  }, [user, username]);
+  }, [user, username, loading]);
 
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -66,26 +61,14 @@ function LoginForm() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           placeholder="email"
-          status={
-            email.length > 0
-              ? validateEmail(email)
-                ? "correct"
-                : "wrong"
-              : undefined
-          }
+          status={undefined}
         />
         <LoginInput
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
           placeholder="password"
-          status={
-            password.length > 0
-              ? validatePassword(password)
-                ? "correct"
-                : "wrong"
-              : undefined
-          }
+          status={undefined}
         />
         <StyledLoginButton>
           <LoginRoundedIcon />

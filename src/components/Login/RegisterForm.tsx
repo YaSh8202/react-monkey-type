@@ -105,7 +105,7 @@ function RegisterForm() {
           placeholder="verify email"
           status={
             email.length > 0
-              ? email === verifyEmail && email.length > 0
+              ? email === verifyEmail
                 ? "correct"
                 : "wrong"
               : undefined
@@ -136,7 +136,7 @@ function RegisterForm() {
           placeholder="verify password"
           status={
             password.length > 0
-              ? password === verifyPassword && password.length > 0
+              ? password === verifyPassword
                 ? "correct"
                 : "wrong"
               : undefined
