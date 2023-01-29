@@ -15,8 +15,7 @@ function Navbar() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { user, username, loading } = React.useContext(UserContext);
-  console.log(user, username, loading);
+  const { username } = React.useContext(UserContext);
   return (
     <Stack
       padding={" 5px 0"}
@@ -67,12 +66,19 @@ function Navbar() {
           </Box>
         </Box>
         <IconButton
+          sx={{
+            color: theme.sub.main,
+            transition: "color 0.2s",
+            "&:hover": {
+              color: theme.text.main,
+            },
+          }}
           onClick={() => {
             navigate("/");
             dispatch(resetTest());
           }}
         >
-          <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
+          <KeyboardRoundedIcon fontSize="small" />
         </IconButton>
         {/* <IconButton>
           <MemoCrown height={20} width={20} color={theme.menuBtn["2"]} />
