@@ -13,6 +13,7 @@ import { resetTest } from "./store/testSlice";
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Test from "./components/Test/Test";
 import Login from "./components/Login/Login";
+import { UserContextProvider } from "./store/userContext";
 
 const router = createBrowserRouter([
   {
@@ -70,7 +71,9 @@ export const AppWithTheme = () => {
 
   return (
     <ThemeProvider theme={getTheme(theme)}>
-      <RouterProvider router={router} />
+      <UserContextProvider>
+        <RouterProvider router={router} />
+      </UserContextProvider>
     </ThemeProvider>
   );
 };

@@ -70,7 +70,7 @@ function ThemeModal() {
       componentsProps={{
         backdrop: {
           sx: {
-            background: "transparent",
+            // background: "transparent",
           },
         },
       }}
@@ -88,7 +88,8 @@ function ThemeModal() {
           display: "flex",
           flexDirection: "column",
           backgroundColor: theme.background.main,
-          height: 400,
+          minHeight: 300,
+          maxHeight: "80vh",
           borderRadius: "10px",
           outline: `0.25rem solid ${theme.sub.alt}`,
           // boxShadow: ` 0 0 0 calc(4px + 2px) ${theme.sub.alt}`,

@@ -18,6 +18,7 @@ export const themeSlice = createSlice({
   reducers: {
     setTheme: (state, action: PayloadAction<Themes>) => {
       state.theme = action.payload;
+      state.themeModalOpen = false;
     },
     closeModal: (state) => {
       state.themeModalOpen = !state.themeModalOpen;

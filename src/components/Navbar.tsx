@@ -3,18 +3,20 @@ import React from "react";
 import MemoMtLogo from "./MtLogo";
 import KeyboardRoundedIcon from "@mui/icons-material/KeyboardRounded";
 import PersonRoundedIcon from "@mui/icons-material/PersonRounded";
-import NotificationsRoundedIcon from "@mui/icons-material/NotificationsRounded";
-import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import PersonOutlineOutlinedIcon from "@mui/icons-material/PersonOutlineOutlined";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../store/store";
 import { resetTest } from "../store/testSlice";
+import { UserContext } from "../store/userContext";
+import { signOut } from "firebase/auth";
+import { auth } from "../util/firebase";
 function Navbar() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const loggedIn = false;
   const navigate = useNavigate();
+  const { user, username, loading } = React.useContext(UserContext);
+  console.log(user, username, loading);
   return (
     <Stack
       padding={" 5px 0"}
@@ -70,61 +72,64 @@ function Navbar() {
             dispatch(resetTest());
           }}
         >
-          <KeyboardRoundedIcon
-            fontSize="small"
-            htmlColor={theme.menuBtn["1"]}
-          />
+          <KeyboardRoundedIcon fontSize="small" htmlColor={theme.sub.main} />
         </IconButton>
-        <IconButton>
+        {/* <IconButton>
           <MemoCrown height={20} width={20} color={theme.menuBtn["2"]} />
         </IconButton>
         <IconButton>
           <SettingsIcon fontSize="small" htmlColor={theme.menuBtn["3"]} />
-        </IconButton>
+        </IconButton> */}
       </Box>
-      <Stack direction={"row"} spacing={1}>
-        <Box>
-          <IconButton
-            sx={{
-              color: theme.sub.main,
-            }}
-          >
-            {loggedIn && (
-              <>
-                <PersonRoundedIcon
-                  fontSize="small"
-                  htmlColor={theme.menuBtn["4"]}
-                />
-                <Typography variant="caption" color={theme.menuBtn["4"]}>
-                  yash82
-                </Typography>
-              </>
-            )}
-          </IconButton>
-          <IconButton>
-            <NotificationsRoundedIcon
-              fontSize="small"
-              htmlColor={theme.menuBtn["5"]}
-            />
-          </IconButton>
-          <IconButton
-            onClick={() => {
-              navigate("/login");
-            }}
-            sx={{
-              color: theme.sub.main,
-              transition: "color 0.2s",
-              "&:hover": {
-                color: theme.main.main,
-              },
-            }}
-          >
-            {loggedIn ? (
-              <LogoutIcon fontSize="small" htmlColor={theme.menuBtn["6"]} />
-            ) : (
-              <PersonOutlineOutlinedIcon />
-            )}
-          </IconButton>
+      <Stack direction={"row"} alignItems={"center"} spacing={1}>
+        <Box
+          sx={{
+            color: theme.sub.main,
+            transition: "color 0.2s",
+            display: "flex",
+            alignItems: "center",
+            cursor: "pointer",
+            "&:hover": {
+              color: theme.text.main,
+            },
+          }}
+        >
+          {username && (
+            <>
+              <PersonRoundedIcon fontSize="small" />
+              <Typography
+                sx={{
+                  marginLeft: 1 / 2,
+                }}
+                variant="body2"
+              >
+                {username}
+              </Typography>
+            </>
+          )}
+        </Box>
+
+        <Box
+          onClick={() => {
+            if (username) {
+              signOut(auth);
+            }
+            navigate("/login");
+          }}
+          sx={{
+            color: theme.sub.main,
+            transition: "color 0.2s",
+            cursor: "pointer",
+            "&:hover": {
+              color: theme.text.main,
+            },
+          }}
+        >
+          {username ? (
+            <LogoutIcon fontSize="small" />
+          ) : (
+            <PersonOutlineOutlinedIcon fontSize="small" />
+          )}
         </Box>
       </Stack>
     </Stack>
@@ -132,22 +137,22 @@ function Navbar() {
 }
 
 export default Navbar;
-function Crown(props: React.SVGProps<SVGSVGElement>) {
-  return (
-    <svg
-      aria-hidden="true"
-      width="1em"
-      height="1em"
-      viewBox="0 0 24 24"
-      className="prefix__iconify prefix__iconify--mdi"
-      {...props}
-    >
-      <path
-        fill="currentColor"
-        d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"
-      />
-    </svg>
-  );
-}
+// function Crown(props: React.SVGProps<SVGSVGElement>) {
+//   return (
+//     <svg
+//       aria-hidden="true"
+//       width="1em"
+//       height="1em"
+//       viewBox="0 0 24 24"
+//       className="prefix__iconify prefix__iconify--mdi"
+//       {...props}
+//     >
+//       <path
+//         fill="currentColor"
+//         d="M5 16L3 5l5.5 5L12 4l3.5 6L21 5l-2 11H5m14 3c0 .6-.4 1-1 1H6c-.6 0-1-.4-1-1v-1h14v1z"
+//       />
+//     </svg>
+//   );
+// }
 
-const MemoCrown = React.memo(Crown);
+// const MemoCrown = React.memo(Crown);

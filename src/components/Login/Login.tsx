@@ -2,18 +2,23 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { useTheme } from "@mui/material/styles";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useContext } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 import PersonAddAltRoundedIcon from "@mui/icons-material/PersonAddAltRounded";
 import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
 import GoogleIcon from "@mui/icons-material/Google";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
 import { auth, firestore } from "../../util/firebase";
 import DoneIcon from "@mui/icons-material/Done";
 import CircularProgress from "@mui/material/CircularProgress";
 import debounce from "lodash.debounce";
 import { collection, doc, getDoc, writeBatch } from "firebase/firestore";
 import Tooltip from "@mui/material/Tooltip";
+import { UserContext } from "../../store/userContext";
+import { useNavigate } from "react-router-dom";
 const validateEmail = (email: string) => {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -25,6 +30,14 @@ const validatePassword = (password: string) => {
 };
 
 function Login() {
+  const { username } = useContext(UserContext);
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (username) {
+      navigate("/");
+    }
+  }, [username, navigate]);
+
   return (
     <Box display={"flex"} justifyContent={"space-around"}>
       <RegisterForm />
@@ -51,6 +64,7 @@ const StyledInput = styled("input")(({ theme }) => ({
     opacity: 0.8,
     fontWeight: 300,
   },
+  
 }));
 
 const LoginInput: React.FunctionComponent<
@@ -103,8 +117,12 @@ const StyledLoginButton = styled("button")(({ theme }) => ({
   gap: "0.5rem",
   cursor: "pointer",
   transition: "all 0.2s ease-in-out",
-  "&:hover": {
+  "&:hover,&:focus": {
     backgroundColor: theme.text.main,
+    color: theme.sub.alt,
+  },
+  "&:active": {
+    backgroundColor: theme.main.main,
     color: theme.sub.alt,
   },
 }));
@@ -295,7 +313,11 @@ function LoginForm() {
   const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const userCredential = await signInWithEmailAndPassword(auth, email,password);
+    const userCredential = await signInWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
     const user = userCredential.user;
     console.log(user);
   };

@@ -4,7 +4,7 @@ import { auth, firestore } from "../util//firebase";
 import { User, onAuthStateChanged } from "firebase/auth";
 
 export function useUserData() {
-  const [username, setUsername] = useState(null);
+  const [username, setUsername] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [user, setUser] = useState<User | null>();
 
