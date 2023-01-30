@@ -14,6 +14,9 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Test from "./components/Test/Test";
 import Login from "./components/Login/Login";
 import { UserContextProvider } from "./store/userContext";
+import { useGoogleOneTapLogin } from "react-google-one-tap-login";
+import { GoogleAuthProvider, signInWithCredential } from "firebase/auth";
+import { auth } from "./util/firebase";
 
 const router = createBrowserRouter([
   {
@@ -35,6 +38,19 @@ function App() {
   useEffect(() => {
     dispatch(resetTest());
   }, [dispatch]);
+
+  useGoogleOneTapLogin({
+    onError: (error) => console.log(error),
+    onSuccess: (response) => console.log(response),
+    googleAccountConfigs: {
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID!,
+      callback: async ({ clientId, credential, select_by }) => {
+        console.log("credentiaL\n", credential, select_by);
+        const googleCredential = GoogleAuthProvider.credential(credential);
+        await signInWithCredential(auth, googleCredential);
+      },
+    },
+  });
   return (
     <Box
       padding={"24px 0px"}
