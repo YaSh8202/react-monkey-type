@@ -53,6 +53,7 @@ const UsernameModal: React.FunctionComponent<{
           left: "50%",
           transform: "translate(-50%, -50%)",
           width: "400px",
+          maxWidth: "80vw",
           display: "flex",
           flexDirection: "column",
           backgroundColor: theme.background.main,
