@@ -96,7 +96,7 @@ function TestBox() {
             {time - timerCount}
           </Typography>
         )}
-        {mode2 === "words" && (
+        {(mode2 === "words" || mode2 === "quote") && (
           <Typography
             sx={{
               opacity: timerCount > 0 ? 1 : 0,

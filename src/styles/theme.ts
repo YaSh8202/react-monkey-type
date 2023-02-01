@@ -134,6 +134,32 @@ const dev = {
   colorfulErrorExtraColor: "#84131f",
 };
 
+const moonlight = {
+  bgColor: "#191f28",
+  mainColor: "#c69f68",
+  caretColor: "#8f744b",
+  subColor: "#4b5975",
+  subAltColor: "#191f27",
+  textColor: "#ccccb5",
+  errorColor: "#b81b2c",
+  errorExtraColor: "#84131f",
+  colorfulErrorColor: "#b81b2c",
+  colorfulErrorExtraColor: "#84131f",
+};
+
+const miamiNights = {
+  bgColor: "#18181a",
+  mainColor: "#e4609b",
+  caretColor: "#e4609b",
+  subColor: "#47bac0",
+  subAltColor: "#0f0f10",
+  textColor: "#fff",
+  errorColor: "#fff591",
+  errorExtraColor: "#b6af68",
+  colorfulErrorColor: "#fff591",
+  colorfulErrorExtraColor: "#b6af68",
+};
+
 function createThemeFunc(theme: CustomTheme) {
   return createTheme({
     background: {
@@ -178,6 +204,8 @@ export enum Themes {
   joker = "joker",
   futureFunk = "future funk",
   dev = "dev",
+  moonlight = "moonlight",
+  miamiNights = "miami nights",
 }
 
 export function getTheme(theme: Themes) {
@@ -190,6 +218,10 @@ export function getTheme(theme: Themes) {
       return createThemeFunc(futureFunk);
     case Themes.dev:
       return createThemeFunc(dev);
+    case Themes.moonlight:
+      return createThemeFunc(moonlight);
+    case Themes.miamiNights:
+      return createThemeFunc(miamiNights);
     default:
       return createThemeFunc(oneDarkTheme);
   }
