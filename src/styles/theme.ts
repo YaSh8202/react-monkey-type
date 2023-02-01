@@ -121,6 +121,19 @@ const futureFunk = {
   colorfulErrorExtraColor: "#bd1c66",
 } as CustomTheme;
 
+const dev = {
+  bgColor: "#1b2028",
+  mainColor: "#23a9d5",
+  caretColor: "#4b5975",
+  subColor: "#4b5975",
+  subAltColor: "#151a21",
+  textColor: "#ccccb5",
+  errorColor: "#b81b2c",
+  errorExtraColor: "#84131f",
+  colorfulErrorColor: "#b81b2c",
+  colorfulErrorExtraColor: "#84131f",
+};
+
 function createThemeFunc(theme: CustomTheme) {
   return createTheme({
     background: {
@@ -164,6 +177,7 @@ export enum Themes {
   dracula = "dracula",
   joker = "joker",
   futureFunk = "future funk",
+  dev = "dev",
 }
 
 export function getTheme(theme: Themes) {
@@ -174,6 +188,8 @@ export function getTheme(theme: Themes) {
       return createThemeFunc(joker);
     case Themes.futureFunk:
       return createThemeFunc(futureFunk);
+    case Themes.dev:
+      return createThemeFunc(dev);
     default:
       return createThemeFunc(oneDarkTheme);
   }
