@@ -60,6 +60,16 @@ function Navbar() {
             >
               monkeysee
             </Typography>
+            <Typography
+              fontSize={10}
+              variant="caption"
+              position={"absolute"}
+              right={0}
+              bottom={-8}
+              color={theme.sub.main}
+            >
+              clone
+            </Typography>
             <Typography color={theme.text.main} variant="h4">
               monkeytype
             </Typography>
