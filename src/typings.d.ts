@@ -15,7 +15,8 @@ export type quoteLengthOptionsType =
   | "short"
   | "medium"
   | "long"
-  | "thicc";
+  | "thicc"
+  | "search";
 
 export type CustomTheme = {
   bgColor: string;

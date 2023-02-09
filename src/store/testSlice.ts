@@ -18,6 +18,7 @@ export const quoteLengthOptions: quoteLengthOptionsType[] = [
   "medium",
   "long",
   "thicc",
+  "search"
 ];
 
 export interface TestState {
@@ -29,6 +30,7 @@ export interface TestState {
   currentWordIndex: number;
   correctWords: boolean[];
   wpm: number;
+  searchQuoteModal: boolean;
   // currentCharIndex: number;
   // current: string;
   // history: string[];
@@ -68,6 +70,7 @@ const initialState: TestState = {
   showResult: false,
   wpmHistory: [],
   rawHistory: [],
+  searchQuoteModal: false,
 };
 
 export const testSlice = createSlice({

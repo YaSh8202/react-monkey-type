@@ -157,8 +157,7 @@ function TestBox() {
         autoComplete="off"
         maxRows={1}
         variant="filled"
-        InputLabelProps={{ shrink: false }}
-        tabIndex={0}
+        InputLabelProps={{ shrink: false, tabIndex: 0 }}
         sx={{
           width: "50%",
           maxWidth: "300px",
