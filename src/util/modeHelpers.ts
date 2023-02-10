@@ -37,6 +37,7 @@ function getQuote(length: quoteLengthOptionsType) {
     return quotes[Math.floor(Math.random() * quotes.length)].text;
 
   const groupIndex = quoteLengthOptions.findIndex((x) => x === length);
+  
   const group = groups[groupIndex - 1];
   const newQuotes = [...quotes].filter(
     (x) => group[0] <= x.length && x.length <= group[1]
