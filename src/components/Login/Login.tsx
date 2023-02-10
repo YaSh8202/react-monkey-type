@@ -12,7 +12,6 @@ import { useNavigate } from "react-router-dom";
 import RegisterForm from "./RegisterForm";
 import LoginForm from "./LoginForm";
 
-
 export const validateEmail = (email: string) => {
   return email.match(
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
@@ -82,26 +81,28 @@ export const LoginInput: React.FunctionComponent<
   return (
     <Box position={"relative"} height={"36px"} boxSizing={"border-box"}>
       <StyledInput {...rest} />
-      <Tooltip title={status === "wrong" ? message : ""}>
-        <Box
-          position={"absolute"}
-          right={"0px"}
-          top={0}
-          height={"100%"}
-          display={"flex"}
-          justifyContent={"center"}
-          alignItems={"center"}
-          width="33px"
-        >
-          {status === "wrong" ? (
-            <CloseIcon fontSize="small" htmlColor={theme.error.main} />
-          ) : status === "correct" ? (
-            <DoneIcon fontSize="small" htmlColor={theme.main.main} />
-          ) : status === "loading" ? (
-            <CircularProgress size={"15px"} />
-          ) : null}
-        </Box>
-      </Tooltip>
+      {status && (
+        <Tooltip title={status === "wrong" ? message : ""}>
+          <Box
+            position={"absolute"}
+            right={"0px"}
+            top={0}
+            height={"100%"}
+            display={"flex"}
+            justifyContent={"center"}
+            alignItems={"center"}
+            width="33px"
+          >
+            {status === "wrong" ? (
+              <CloseIcon fontSize="small" htmlColor={theme.error.main} />
+            ) : status === "correct" ? (
+              <DoneIcon fontSize="small" htmlColor={theme.main.main} />
+            ) : status === "loading" ? (
+              <CircularProgress size={"15px"} />
+            ) : null}
+          </Box>
+        </Tooltip>
+      )}
     </Box>
   );
 };
@@ -130,7 +131,5 @@ export const StyledLoginButton = styled("button")(({ theme }) => ({
     color: theme.sub.alt,
   },
 }));
-
-
 
 export default Login;

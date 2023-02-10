@@ -21,6 +21,7 @@ import {
   wordLengthOptions,
 } from "../../store/testSlice";
 import type { TimeOptionsType, Mode2 } from "../../typings";
+import Search from "@mui/icons-material/Search";
 
 const CustomButton = styled(Box, {
   shouldForwardProp: (prop) => prop !== "active",
@@ -203,7 +204,15 @@ function ModesStack() {
                 active={w === quoteLength}
                 onClick={() => dispatch(setQuoteLength(w))}
               >
-                {w}
+                {w === "search" ? (
+                  <Search
+                    sx={{
+                      fontSize: "16px",
+                    }}
+                  />
+                ) : (
+                  w
+                )}
               </CustomButton>
             );
           })}

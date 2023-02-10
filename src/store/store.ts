@@ -5,10 +5,12 @@ import themeSlice from "./themeSlice";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
 import { persistReducer, persistStore } from "redux-persist";
+import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 
 const persistConfig = {
   key: "root",
   storage,
+  stateReconcliler: autoMergeLevel1,
 };
 const persistedReducer = persistReducer(
   persistConfig,

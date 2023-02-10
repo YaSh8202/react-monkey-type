@@ -1,12 +1,13 @@
 import Modal from "@mui/material/Modal";
 import React, { useEffect, useState } from "react";
-import { useAppSelector } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
 import Box from "@mui/material/Box";
 import { useTheme } from "@mui/material/styles";
 import MiniSearch from "minisearch";
 import englishQuotes from "../../languages/english_quotes.json";
 import { Typography } from "@mui/material";
 import { StyledInput } from "../Login/Login";
+import { closeSearchModal, setSearchQuote } from "../../store/testSlice";
 
 async function searchQuotes(search: string) {
   const searchIndex = new MiniSearch<{
@@ -18,9 +19,10 @@ async function searchQuotes(search: string) {
     fields: ["text", "source"], // fields to index for full-text search
     storeFields: ["text", "source", "id", "length"],
     searchOptions: {
-      boost: { text: 1, source: 1 }, // fields to boost for fuzzy search
+      boost: { text: 1, source: 2 }, // fields to boost for fuzzy search
       prefix: true, // use prefix search
       fuzzy: 0.25,
+      combineWith: "AND",
     },
   });
 
@@ -32,24 +34,42 @@ async function searchQuotes(search: string) {
 }
 
 type searchResultType = Awaited<ReturnType<typeof searchQuotes>>[0];
+type quoteType = typeof englishQuotes.quotes[0];
 
-function Quote({ quote }: { quote: searchResultType }) {
+function Quote({ quote }: { quote: searchResultType | quoteType }) {
   const theme = useTheme();
+  const dispatch = useAppDispatch();
   return (
     <Box
+      onClick={() => {
+        dispatch(setSearchQuote(quote.text.split(" ")));
+      }}
       boxSizing={"border-box"}
       display="flex"
       flexDirection={"column"}
       p={1}
       sx={{
         cursor: "pointer",
+        borderRadius: "10px",
         "&:hover": {
           backgroundColor: theme.sub.alt,
           transition: "background-color 0.2s ease-in-out",
         },
       }}
     >
-      <Typography variant="body1" color={theme.text.main}>
+      <Typography
+        sx={{
+          display: "-webkit-box",
+          WebkitBoxOrient: "vertical",
+          overflow: "hidden",
+          WebkitLineClamp: {
+            xs: 2,
+            sm: 3,
+          },
+        }}
+        variant="body1"
+        color={theme.text.main}
+      >
         {quote.text}
       </Typography>
       <Box
@@ -57,7 +77,16 @@ function Quote({ quote }: { quote: searchResultType }) {
         flexDirection={"row"}
         justifyContent={"space-between"}
       >
-        <Box flex={1} display="flex" flexDirection={"column"}>
+        <Box
+          flex={1}
+          sx={{
+            display: {
+              xs: "none",
+              sm: "flex",
+            },
+          }}
+          flexDirection={"column"}
+        >
           <Typography
             sx={{
               opacity: 0.5,
@@ -97,6 +126,8 @@ function Quote({ quote }: { quote: searchResultType }) {
 
 function QuotesModal() {
   const open = useAppSelector((state) => state.test.searchQuoteModal);
+  const dispatch = useAppDispatch();
+  console.log("open", open);
   const theme = useTheme();
   const [search, setSearch] = useState("");
 
@@ -110,10 +141,15 @@ function QuotesModal() {
       isCurrent = false;
     };
   }, [search]);
+
+  const handleClose = () => {
+    dispatch(closeSearchModal());
+  };
+
   return (
     <Modal
       open={open}
-      // onClose={handleClose}
+      onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
       componentsProps={{
@@ -130,17 +166,18 @@ function QuotesModal() {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: "60vw",
-          // border: `5px solid ${theme.sub.alt}`,
-          // boxShadow: 24,
+          width: "80vw",
+          maxWidth: "1000px",
           display: "flex",
           flexDirection: "column",
           backgroundColor: theme.background.main,
           height: "80vh",
           borderRadius: "10px",
           outline: `0.25rem solid ${theme.sub.alt}`,
-          // boxShadow: ` 0 0 0 calc(4px + 2px) ${theme.sub.alt}`,
-          padding: "2rem",
+          padding: {
+            xs: "1rem",
+            sm: "2rem",
+          },
         }}
       >
         {/* Head */}
@@ -150,7 +187,17 @@ function QuotesModal() {
           </Typography>
         </Box>
         {/* search and filter input */}
-        <Box display={"flex"} flexDirection={"row"} gap={"1rem"}>
+        <Box
+          display={"flex"}
+          flexDirection={"row"}
+          gap={"1rem"}
+          sx={{
+            flexDirection: {
+              xs: "column",
+              sm: "row",
+            },
+          }}
+        >
           <StyledInput
             placeholder={"Filter by text"}
             onChange={(e) => setSearch(e.target.value)}
@@ -165,6 +212,22 @@ function QuotesModal() {
             }}
           />
         </Box>
+        <Typography
+          sx={{
+            display: {
+              xs: "none",
+              sm: "block",
+            },
+          }}
+          color={theme.sub.main}
+          textAlign={"center"}
+          mt={1}
+        >
+          {search.length > 0
+            ? searchResults.length
+            : englishQuotes.quotes.length}
+          {` result(s)`}
+        </Typography>
         {/* results */}
         <Box
           overflow={"auto"}
@@ -183,9 +246,11 @@ function QuotesModal() {
             },
           }}
         >
-          {searchResults.map((quote) => (
-            <Quote quote={quote} />
-          ))}
+          {(search.length > 0 ? searchResults : englishQuotes.quotes)
+            .slice(0, 100)
+            .map((quote) => (
+              <Quote key={quote.id} quote={quote} />
+            ))}
         </Box>
       </Box>
     </Modal>

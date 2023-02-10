@@ -18,7 +18,7 @@ export const quoteLengthOptions: quoteLengthOptionsType[] = [
   "medium",
   "long",
   "thicc",
-  "search"
+  "search",
 ];
 
 export interface TestState {
@@ -48,6 +48,7 @@ export interface TestState {
     time: number;
     wpm: number;
   }[];
+  searchQuote: string[] | null;
 }
 
 const initialState: TestState = {
@@ -71,6 +72,7 @@ const initialState: TestState = {
   wpmHistory: [],
   rawHistory: [],
   searchQuoteModal: false,
+  searchQuote: null,
 };
 
 export const testSlice = createSlice({
@@ -93,14 +95,17 @@ export const testSlice = createSlice({
       state.timerCount = 0;
       state.currentWordIndex = 0;
       state.correctWords = [];
-      state.wordsList = getWords(
-        state.punctuation,
-        state.numbers,
-        state.mode2,
-        state.time,
-        state.wordLength,
-        state.quoteLength
-      );
+      state.wordsList =
+        state.quoteLength === "search"
+          ? state.wordsList
+          : getWords(
+              state.punctuation,
+              state.numbers,
+              state.mode2,
+              state.time,
+              state.wordLength,
+              state.quoteLength
+            );
       state.wpm = 0;
       state.showResult = false;
       state.wpmHistory = [];
@@ -185,8 +190,20 @@ export const testSlice = createSlice({
       testSlice.caseReducers.resetTest(state);
     },
     setQuoteLength(state, action: PayloadAction<quoteLengthOptionsType>) {
+      if (action.payload === "search") {
+        state.searchQuoteModal = true;
+        return;
+      }
       state.quoteLength = action.payload;
       testSlice.caseReducers.resetTest(state);
+    },
+    setSearchQuote(state, action: PayloadAction<string[]>) {
+      state.wordsList = action.payload;
+      state.searchQuoteModal = false;
+      state.quoteLength = "search";
+    },
+    closeSearchModal(state) {
+      state.searchQuoteModal = false;
     },
   },
 });
@@ -204,6 +221,8 @@ export const {
   toggleNumbers,
   setWordLength,
   setQuoteLength,
+  setSearchQuote,
+  closeSearchModal,
 } = testSlice.actions;
 
 export default testSlice.reducer;
