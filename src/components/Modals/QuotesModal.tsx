@@ -7,9 +7,38 @@ import MiniSearch from "minisearch";
 import englishQuotes from "../../languages/english_quotes.json";
 import { Typography } from "@mui/material";
 import { StyledInput } from "../Login/Login";
-import { closeSearchModal, setSearchQuote } from "../../store/testSlice";
+import {
+  closeSearchModal,
+  quoteLengthOptions,
+  setSearchQuote,
+} from "../../store/testSlice";
+import MultipleSelect from "./MultipleSelect";
 
-async function searchQuotes(search: string) {
+function getQuoteGroup(length: number) {
+  const allGroups = ["short", "medium", "long", "thicc"];
+  const groupRange = englishQuotes.groups;
+  const quoteRangeMap = {} as Record<string, [number, number]>;
+  allGroups.forEach((group, index) => {
+    quoteRangeMap[group] = [groupRange[index][0], groupRange[index][1]];
+  });
+
+  const quoteGroup = allGroups.find((group) => {
+    const [min, max] = quoteRangeMap[group];
+    return length >= min && length <= max;
+  });
+
+  return quoteGroup;
+}
+
+async function searchQuotes(search: string, filterLength: string[]) {
+  if (search.length === 0) {
+    if (filterLength.length === 0) return englishQuotes.quotes;
+    return englishQuotes.quotes.filter((quote) => {
+      const quoteGroup = getQuoteGroup(quote.length);
+      return filterLength.includes(quoteGroup!);
+    });
+  }
+
   const searchIndex = new MiniSearch<{
     text: string;
     source: string;
@@ -28,8 +57,15 @@ async function searchQuotes(search: string) {
 
   await searchIndex.addAllAsync(englishQuotes.quotes);
 
-  const searchResults = searchIndex.search(search);
-  console.log(searchResults);
+  const searchResults = searchIndex.search(search, {
+    filter: (quote) => {
+      if (filterLength.length === 0) return true;
+
+      const quoteGroup = getQuoteGroup(quote.length);
+      console.log("quoteGroup", quoteGroup, filterLength);
+      return filterLength.includes(quoteGroup!);
+    },
+  });
   return searchResults;
 }
 
@@ -106,7 +142,9 @@ function Quote({ quote }: { quote: searchResultType | quoteType }) {
           >
             length
           </Typography>
-          <Typography color={theme.sub.main}>{quote.length}</Typography>
+          <Typography color={theme.sub.main}>
+            {getQuoteGroup(quote.length)}
+          </Typography>
         </Box>
         <Box flex={2} display="flex" flexDirection={"column"}>
           <Typography
@@ -127,20 +165,22 @@ function Quote({ quote }: { quote: searchResultType | quoteType }) {
 function QuotesModal() {
   const open = useAppSelector((state) => state.test.searchQuoteModal);
   const dispatch = useAppDispatch();
-  console.log("open", open);
   const theme = useTheme();
   const [search, setSearch] = useState("");
+  const [lengthFilter, setLengthFilter] = useState<string[]>([]);
+
+  // console.log("lengthFilter", lengthFilter);
 
   const [searchResults, setSearchResults] = useState<searchResultType[]>([]);
   useEffect(() => {
     let isCurrent = true;
-    searchQuotes(search).then((res) => {
+    searchQuotes(search, lengthFilter).then((res) => {
       if (isCurrent) setSearchResults(res);
     });
     return () => {
       isCurrent = false;
     };
-  }, [search]);
+  }, [search, lengthFilter]);
 
   const handleClose = () => {
     dispatch(closeSearchModal());
@@ -205,11 +245,19 @@ function QuotesModal() {
               flex: 3,
             }}
           />
-          <StyledInput
+          {/* <StyledInput
             placeholder={"Filter by length"}
             sx={{
               flex: 2,
             }}
+          /> */}
+          <MultipleSelect
+            selectedItems={lengthFilter}
+            setSelectedItems={setLengthFilter}
+            inputLabel={"Filter by length"}
+            items={quoteLengthOptions.filter(
+              (q) => q !== "search" && q !== "all"
+            )}
           />
         </Box>
         <Typography
@@ -223,9 +271,7 @@ function QuotesModal() {
           textAlign={"center"}
           mt={1}
         >
-          {search.length > 0
-            ? searchResults.length
-            : englishQuotes.quotes.length}
+          {searchResults.length}
           {` result(s)`}
         </Typography>
         {/* results */}
@@ -246,11 +292,9 @@ function QuotesModal() {
             },
           }}
         >
-          {(search.length > 0 ? searchResults : englishQuotes.quotes)
-            .slice(0, 100)
-            .map((quote) => (
-              <Quote key={quote.id} quote={quote} />
-            ))}
+          {searchResults.slice(0, 100).map((quote) => (
+            <Quote key={quote.id} quote={quote} />
+          ))}
         </Box>
       </Box>
     </Modal>

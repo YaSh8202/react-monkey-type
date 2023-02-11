@@ -186,12 +186,19 @@ function createThemeFunc(theme: CustomTheme) {
     },
 
     palette: {
+      mode: "dark",
       primary: {
-        main: "#fff",
+        main: theme.mainColor,
         darker: "#053e85",
+        contrastText: "#fff",
+      },
+      secondary: {
+        main: theme.subColor,
+        light: theme.subColor,
+        dark: theme.subColor,
       },
       neutral: {
-        main: "#64748B",
+        main: theme.subColor,
         contrastText: "#fff",
       },
     },
