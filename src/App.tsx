@@ -88,7 +88,6 @@ function App() {
           googleAccountConfigs={{
             client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID!,
             callback: async ({ clientId, credential, select_by }) => {
-              console.log("credentiaL\n", credential, select_by);
               const googleCredential =
                 GoogleAuthProvider.credential(credential);
               await signInWithCredential(auth, googleCredential);

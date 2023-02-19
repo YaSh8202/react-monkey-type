@@ -12,7 +12,6 @@ const ITEM_PADDING_TOP = 4;
 
 function getStyles(name: string, items: string[], theme: Theme) {
   const isSelected = items.indexOf(name) > -1;
-  console.log(name, isSelected);
   return {
     backgroundColor: isSelected ? "red" : theme.background.main,
     color: theme.sub.main,

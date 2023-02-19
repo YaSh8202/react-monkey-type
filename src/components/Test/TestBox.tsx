@@ -118,6 +118,30 @@ function TestBox() {
 
       <TestWords />
 
+      <StyledTextField
+        inputRef={inputRef}
+        focused={isRunning}
+        autoCapitalize="off"
+        autoCorrect="off"
+        autoComplete="off"
+        maxRows={1}
+        variant="filled"
+        InputLabelProps={{ shrink: false, tabIndex: 0 }}
+        sx={{
+          width: "50%",
+          maxWidth: "300px",
+          margin: "auto",
+          borderColor: "white",
+          marginTop: "1rem",
+        }}
+        value={userText}
+        onChange={processInput}
+        disabled={
+          (mode2 === "time" && timerCount >= time) ||
+          currentWordIndex === wordsList.length
+        }
+        autoFocus
+      />
       <Tooltip
         placement="left"
         componentsProps={{
@@ -139,7 +163,7 @@ function TestBox() {
         title="Restart test"
       >
         <IconButton
-          tabIndex={1}
+          tabIndex={0}
           onClick={() => {
             dispatch(resetTest());
             inputRef.current?.focus();
@@ -149,29 +173,6 @@ function TestBox() {
           <RefreshIcon htmlColor={theme.sub.main} />
         </IconButton>
       </Tooltip>
-      <StyledTextField
-        inputRef={inputRef}
-        focused={isRunning}
-        autoCapitalize="off"
-        autoCorrect="off"
-        autoComplete="off"
-        maxRows={1}
-        variant="filled"
-        InputLabelProps={{ shrink: false, tabIndex: 0 }}
-        sx={{
-          width: "50%",
-          maxWidth: "300px",
-          margin: "auto",
-          borderColor: "white",
-        }}
-        value={userText}
-        onChange={processInput}
-        disabled={
-          (mode2 === "time" && timerCount >= time) ||
-          currentWordIndex === wordsList.length
-        }
-        autoFocus
-      />
     </Box>
   );
 }

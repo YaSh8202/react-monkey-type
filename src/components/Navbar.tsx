@@ -76,6 +76,7 @@ function Navbar() {
           </Box>
         </Box>
         <IconButton
+        tabIndex={-1}
           sx={{
             color: theme.sub.main,
             transition: "color 0.2s",

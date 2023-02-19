@@ -27,7 +27,6 @@ function Footer() {
       >
         <Stack direction={"row"}>
           <Link
-            // open in new tab
             target="_blank"
             href="https://github.com/YaSh8202/react-monkey-type"
             sx={{

@@ -62,7 +62,6 @@ async function searchQuotes(search: string, filterLength: string[]) {
       if (filterLength.length === 0) return true;
 
       const quoteGroup = getQuoteGroup(quote.length);
-      console.log("quoteGroup", quoteGroup, filterLength);
       return filterLength.includes(quoteGroup!);
     },
   });
@@ -169,7 +168,6 @@ function QuotesModal() {
   const [search, setSearch] = useState("");
   const [lengthFilter, setLengthFilter] = useState<string[]>([]);
 
-  // console.log("lengthFilter", lengthFilter);
 
   const [searchResults, setSearchResults] = useState<searchResultType[]>([]);
   useEffect(() => {
@@ -258,6 +256,7 @@ function QuotesModal() {
             items={quoteLengthOptions.filter(
               (q) => q !== "search" && q !== "all"
             )}
+            
           />
         </Box>
         <Typography
