@@ -1,5 +1,5 @@
 import Box from "@mui/material/Box";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
@@ -29,7 +29,7 @@ const StyledTextField = styled(
 
 function TestBox() {
   const dispatch = useAppDispatch();
-  const inputRef = React.useRef<HTMLDivElement>(null);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const userText = useAppSelector((state) => state.test.userText);
   const isRunning = useAppSelector((state) => state.test.isRunning);
   const currentWordIndex = useAppSelector(
@@ -40,6 +40,7 @@ function TestBox() {
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
   const mode2 = useAppSelector((state) => state.test.mode2);
+  const [isInputFocused, setIsInputFocused] = useState(true);
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {
@@ -63,13 +64,19 @@ function TestBox() {
     ) {
       return;
     }
-    const isCharacter = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/ ?]$/.test(e.key);
+    const isCharacter = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/ ?]$/.test(
+      e.key
+    );
     // if test is not running, start it
     if (isCharacter && !isRunning) {
       dispatch(startTest());
     }
-    if(isCharacter || e.key==='Backspace' )
-    dispatch(setUserText(e.key));
+    if (isCharacter || e.key === "Backspace") dispatch(setUserText(e.key));
+  };
+
+  const focusInput = () => {
+    inputRef.current?.focus();
+    setIsInputFocused(true);
   };
 
   return (
@@ -117,23 +124,21 @@ function TestBox() {
         </Typography> */}
       </Stack>
 
-      <TestWords />
+      <TestWords
+        onClick={() => {
+          focusInput();
+        }}
+        showFocusInside={!isInputFocused}
+      />
 
-      <StyledTextField
-        inputRef={inputRef}
-        focused={isRunning}
+      <input
+        ref={inputRef}
         autoCapitalize="off"
         autoCorrect="off"
         autoComplete="off"
-        maxRows={1}
-        variant="filled"
-        InputLabelProps={{ shrink: false, tabIndex: 0 }}
-        sx={{
-          width: "50%",
-          maxWidth: "300px",
-          margin: "auto",
-          borderColor: "white",
-          marginTop: "1rem",
+        style={{
+          width: "5%",
+          opacity: 0,
         }}
         value={userText}
         // onChange={processInput}
@@ -143,6 +148,7 @@ function TestBox() {
           currentWordIndex === wordsList.length
         }
         autoFocus
+        onBlur={() => setIsInputFocused(false)}
       />
       <Tooltip
         placement="left"

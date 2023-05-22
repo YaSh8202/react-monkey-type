@@ -1,5 +1,6 @@
 import Box from "@mui/material/Box";
 import { styled, useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { Letter } from "../../typings";
@@ -40,26 +41,26 @@ const Caret = styled("span", {
   },
 }));
 
-// function FocusInside() {
-//   return (
-//     <Box
-//       position={"absolute"}
-//       sx={{
-//         backdropFilter: "blur(4px)",
-//         background: "rgba(0, 0, 0, 0.1)",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         height: "100%",
-//         width: "100%",
-//       }}
-//     >
-//       <Typography variant="h6" color={"white"}>
-//         Click here or start typing to focus
-//       </Typography>
-//     </Box>
-//   );
-// }
+function FocusInside() {
+  return (
+    <Box
+      position={"absolute"}
+      sx={{
+        backdropFilter: "blur(4px)",
+        background: "rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "100%",
+        width: "100%",
+      }}
+    >
+      <Typography variant="h6" color={"white"}>
+        Click here or start typing to focus
+      </Typography>
+    </Box>
+  );
+}
 
 const Word = ({
   text,
@@ -165,7 +166,13 @@ const LetterComponent = ({ letter }: { letter: Letter }) => {
 
 const MemoizedWord = React.memo(Word);
 
-function TestWords() {
+function TestWords({
+  onClick,
+  showFocusInside,
+}: {
+  onClick: () => void;
+  showFocusInside: boolean;
+}) {
   // const wordsList = useAppSelector(state=>state.tet)
   const correctWords = useAppSelector((state) => state.test.correctWords);
   const currentWords = useAppSelector((state) => state.test.currentWords);
@@ -193,6 +200,7 @@ function TestWords() {
 
   return (
     <Box
+      onClick={onClick}
       sx={{
         justifySelf: "center",
         margin: "auto 0",
@@ -210,7 +218,7 @@ function TestWords() {
         position={"relative"}
         ref={containerRef}
       >
-        {/* <FocusInside /> */}
+        {showFocusInside && <FocusInside />}
         <Caret left={caretPosition.left} top={caretPosition.top} />
         {currentWords.map((word, index) => (
           <Box key={index}>
