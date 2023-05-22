@@ -154,7 +154,7 @@ export const testSlice = createSlice({
       state.userText = "";
       state.showResult = true;
       state.caretPosition = {
-        top: 0,
+        top: 6,
         left: 0,
       };
     },
@@ -164,8 +164,6 @@ export const testSlice = createSlice({
       const typedLetter = action.payload;
       const expectedLetter =
         state.currentWords[state.currentWordIndex][state.currentCharIndex];
-      console.log(state.currentWords);
-      console.log(typedLetter, expectedLetter?.letter);
 
       if (typedLetter === "Backspace") {
         if (state.currentCharIndex === 0) {
@@ -207,7 +205,7 @@ export const testSlice = createSlice({
           letter: typedLetter,
           status: "extra",
           wordIndex: state.currentWordIndex,
-          charIndex: state.currentCharIndex + 1,
+          charIndex: state.currentCharIndex,
         });
         state.currentCharIndex += 1;
         return;
@@ -332,7 +330,7 @@ export const {
   setQuoteLength,
   setSearchQuote,
   closeSearchModal,
-  setCaretPosition
+  setCaretPosition,
 } = testSlice.actions;
 
 export default testSlice.reducer;

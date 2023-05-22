@@ -15,9 +15,9 @@ const Caret = styled("span", {
   display: "inline-block",
   width: "2.5px",
   height: "26px",
-  transition: "all 0.2s ease",
   "&:after": {
     content: '""',
+    transition: "all 0.08s ease-in",
     color: theme.caret.main,
     position: "absolute",
     top: top,
@@ -60,7 +60,6 @@ const Caret = styled("span", {
 //     </Box>
 //   );
 // }
-
 
 const Word = ({
   text,
@@ -106,6 +105,21 @@ const LetterComponent = ({ letter }: { letter: Letter }) => {
 
   useEffect(() => {
     if (!letterRef.current) return;
+
+    if (
+      currentWordIndex === letter.wordIndex &&
+      !letterRef.current.nextSibling &&
+      currentCharIndex === letter.charIndex + 1
+    ) {
+      dispatch(
+        setCaretPosition({
+          top: letterRef.current.offsetTop,
+          left: letterRef.current.offsetLeft + letterRef.current.offsetWidth,
+        })
+      );
+      return;
+    }
+
     if (
       currentWordIndex === letter.wordIndex &&
       currentCharIndex === letter.charIndex
@@ -117,7 +131,6 @@ const LetterComponent = ({ letter }: { letter: Letter }) => {
         })
       );
     }
-    // console.log(letterRef.current.offsetLeft, letterRef.current.offsetTop, letter)
   }, [
     currentCharIndex,
     currentWordIndex,
@@ -157,7 +170,6 @@ function TestWords() {
   const correctWords = useAppSelector((state) => state.test.correctWords);
   const currentWords = useAppSelector((state) => state.test.currentWords);
 
-  // console.log("currentWords", currentWords);
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
   );

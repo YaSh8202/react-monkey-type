@@ -68,8 +68,6 @@ function TestBox() {
     if (isCharacter && !isRunning) {
       dispatch(startTest());
     }
-    console.log("key typed", e.key)
-    console.log("isCharacter", isCharacter)
     if(isCharacter || e.key==='Backspace' )
     dispatch(setUserText(e.key));
   };
