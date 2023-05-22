@@ -55,7 +55,7 @@ function TestBox() {
     }
   }, [isRunning, dispatch, mode2]);
 
-  const processInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const processInput = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // if test is over, return
     if (
       currentWordIndex === wordsList.length ||
@@ -63,12 +63,15 @@ function TestBox() {
     ) {
       return;
     }
+    const isCharacter = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/ ?]$/.test(e.key);
     // if test is not running, start it
-    if (!isRunning) {
+    if (isCharacter && !isRunning) {
       dispatch(startTest());
     }
-
-    dispatch(setUserText(e.target.value));
+    console.log("key typed", e.key)
+    console.log("isCharacter", isCharacter)
+    if(isCharacter || e.key==='Backspace' )
+    dispatch(setUserText(e.key));
   };
 
   return (
@@ -135,7 +138,8 @@ function TestBox() {
           marginTop: "1rem",
         }}
         value={userText}
-        onChange={processInput}
+        // onChange={processInput}
+        onKeyDown={processInput}
         disabled={
           (mode2 === "time" && timerCount >= time) ||
           currentWordIndex === wordsList.length

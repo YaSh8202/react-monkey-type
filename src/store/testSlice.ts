@@ -4,6 +4,7 @@ import english from "../languages/english.json";
 import { RootState } from "./store";
 import { getWords } from "../util/modeHelpers";
 import {
+  Letter,
   Mode2,
   quoteLengthOptionsType,
   wordLengthOptionsType,
@@ -21,17 +22,35 @@ export const quoteLengthOptions: quoteLengthOptionsType[] = [
   "search",
 ];
 
+function createLetters(words: string[]): Letter[][] {
+  return words.map((word, i) => {
+    const letters = word.split("");
+    return letters.map((l, j) => ({
+      letter: l,
+      status: "untouched",
+      charIndex: j,
+      wordIndex: i,
+    }));
+  });
+}
+
+interface caretPosition {
+  top: number;
+  left: number;
+}
+
 export interface TestState {
   userText: string;
   isRunning: boolean;
   wordsList: string[];
+  currentWords: Letter[][];
   time: 15 | 30 | 60 | 120;
   timerCount: number;
   currentWordIndex: number;
   correctWords: boolean[];
   wpm: number;
   searchQuoteModal: boolean;
-  // currentCharIndex: number;
+  currentCharIndex: number;
   // current: string;
   // history: string[];
   punctuation: boolean;
@@ -49,18 +68,22 @@ export interface TestState {
     wpm: number;
   }[];
   searchQuote: string[] | null;
+  caretPosition: caretPosition;
 }
+
+const randomizedWords = [...english.words].sort(() => Math.random() - 0.5);
 
 const initialState: TestState = {
   userText: "",
-  wordsList: [...english.words].sort(() => Math.random() - 0.5),
+  wordsList: randomizedWords,
+  currentWords: createLetters(randomizedWords),
   isRunning: false,
   time: 30,
   timerCount: 0,
   wpm: 0,
   currentWordIndex: 0,
   correctWords: [],
-  // currentCharIndex: 0,
+  currentCharIndex: 0,
   // current: "",
   // history: [],
   wordLength: 25,
@@ -73,6 +96,10 @@ const initialState: TestState = {
   rawHistory: [],
   searchQuoteModal: false,
   searchQuote: null,
+  caretPosition: {
+    top: 0,
+    left: 0,
+  },
 };
 
 export const testSlice = createSlice({
@@ -88,6 +115,11 @@ export const testSlice = createSlice({
       state.showResult = false;
       state.wpmHistory = [];
       state.rawHistory = [];
+      state.currentCharIndex = 0;
+      state.caretPosition = {
+        top: 0,
+        left: 0,
+      };
     },
     resetTest: (state) => {
       state.isRunning = false;
@@ -106,42 +138,116 @@ export const testSlice = createSlice({
               state.wordLength,
               state.quoteLength
             );
+      state.currentWords = createLetters(state.wordsList);
       state.wpm = 0;
       state.showResult = false;
       state.wpmHistory = [];
       state.rawHistory = [];
+      state.currentCharIndex = 0;
+      state.caretPosition = {
+        top: 0,
+        left: 0,
+      };
     },
     stopTest: (state) => {
       state.isRunning = false;
       state.userText = "";
       state.showResult = true;
+      state.caretPosition = {
+        top: 0,
+        left: 0,
+      };
     },
     setUserText: (state, action: PayloadAction<string>) => {
       if (!state.isRunning) return;
 
-      const value = action.payload;
-      if (value.endsWith(" ")) {
-        if (
-          (state.mode2 === "time" && state.time <= state.timerCount) ||
-          state.currentWordIndex === state.wordsList.length - 1
-        ) {
-          state.isRunning = false;
-          testSlice.caseReducers.stopTest(state);
-        } else {
-          state.userText = "";
-        }
-        state.correctWords[state.currentWordIndex] =
-          value.trim() === state.wordsList[state.currentWordIndex];
-        state.currentWordIndex += 1;
+      const typedLetter = action.payload;
+      const expectedLetter =
+        state.currentWords[state.currentWordIndex][state.currentCharIndex];
+      console.log(state.currentWords);
+      console.log(typedLetter, expectedLetter?.letter);
 
+      if (typedLetter === "Backspace") {
+        if (state.currentCharIndex === 0) {
+          if (state.currentWordIndex === 0) return;
+          state.currentWordIndex -= 1;
+          state.currentCharIndex =
+            state.currentWords[state.currentWordIndex].length;
+          return;
+        }
+        state.currentCharIndex -= 1;
+        const isExtra =
+          state.currentWords[state.currentWordIndex][state.currentCharIndex]
+            .status === "extra";
+
+        if (isExtra) {
+          state.currentWords[state.currentWordIndex].pop();
+          return;
+        }
+        state.currentWords[state.currentWordIndex][
+          state.currentCharIndex
+        ].status = "untouched";
         return;
       }
-      state.userText = value;
-      if (state.wordsList[state.currentWordIndex].startsWith(value)) {
-        state.correctWords[state.currentWordIndex] = true;
-      } else {
-        state.correctWords[state.currentWordIndex] = false;
+
+      if (typedLetter === " ") {
+        if (state.currentCharIndex === 0) {
+          return;
+        }
+        state.currentWordIndex += 1;
+        state.currentCharIndex = 0;
+        return;
       }
+
+      if (
+        state.currentWords[state.currentWordIndex].length ===
+        state.currentCharIndex
+      ) {
+        state.currentWords[state.currentWordIndex].push({
+          letter: typedLetter,
+          status: "extra",
+          wordIndex: state.currentWordIndex,
+          charIndex: state.currentCharIndex + 1,
+        });
+        state.currentCharIndex += 1;
+        return;
+      }
+
+      if (expectedLetter.letter === typedLetter) {
+        state.currentWords[state.currentWordIndex][
+          state.currentCharIndex
+        ].status = "correct";
+      } else {
+        state.currentWords[state.currentWordIndex][
+          state.currentCharIndex
+        ].status = "wrong";
+      }
+
+      state.currentCharIndex += 1;
+
+      // if (value.endsWith(" ")) {
+      //   if (
+      //     (state.mode2 === "time" && state.time <= state.timerCount) ||
+      //     state.currentWordIndex === state.wordsList.length - 1
+      //   ) {
+      //     state.isRunning = false;
+      //     testSlice.caseReducers.stopTest(state);
+      //   } else {
+      //     state.userText = "";
+      //   }
+      //   state.correctWords[state.currentWordIndex] =
+      //     value.trim() === state.wordsList[state.currentWordIndex];
+      //   state.currentWordIndex += 1;
+
+      //   return;
+      // }
+
+      // state.userText = value;
+      // if (state.wordsList[state.currentWordIndex].startsWith(value)) {
+      //   state.correctWords[state.currentWordIndex] = true;
+      // } else {
+      //   state.correctWords[state.currentWordIndex] = false;
+      // }
     },
 
     incrementTimer: (state, action: PayloadAction<NodeJS.Timer>) => {
@@ -205,6 +311,9 @@ export const testSlice = createSlice({
     closeSearchModal(state) {
       state.searchQuoteModal = false;
     },
+    setCaretPosition(state, action: PayloadAction<caretPosition>) {
+      state.caretPosition = action.payload;
+    },
   },
 });
 
@@ -223,6 +332,7 @@ export const {
   setQuoteLength,
   setSearchQuote,
   closeSearchModal,
+  setCaretPosition
 } = testSlice.actions;
 
 export default testSlice.reducer;

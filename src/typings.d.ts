@@ -35,3 +35,11 @@ export type HistoryType = {
   time: number;
   wpm: number;
 };
+
+
+export interface Letter {
+  letter: string;
+  status: "correct" | "wrong" | "extra" | "untouched";
+  wordIndex: number;
+  charIndex: number;
+}
