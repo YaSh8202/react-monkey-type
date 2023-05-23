@@ -3,34 +3,20 @@ import React, { useEffect, useState } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
+  calculateWMP,
   incrementTimer,
   resetTest,
   setUserText,
   startTest,
 } from "../../store/testSlice";
-import { Stack, TextField, Typography, Tooltip } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { Stack, Typography, Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
-
-const StyledTextField = styled(
-  TextField,
-  {}
-)<{}>(({ theme }) => ({
-  input: {
-    color: theme.sub.main,
-    fontSize: "1.5rem",
-  },
-  label: {
-    color: "white",
-  },
-  backgroundColor: theme.sub.alt,
-}));
 
 function TestBox() {
   const dispatch = useAppDispatch();
   const inputRef = React.useRef<HTMLInputElement>(null);
-  const userText = useAppSelector((state) => state.test.userText);
   const isRunning = useAppSelector((state) => state.test.isRunning);
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
@@ -71,7 +57,10 @@ function TestBox() {
     if (isCharacter && !isRunning) {
       dispatch(startTest());
     }
-    if (isCharacter || e.key === "Backspace") dispatch(setUserText(e.key));
+    if (isCharacter || e.key === "Backspace") {
+      dispatch(setUserText(e.key));
+      dispatch(calculateWMP());
+    }
   };
 
   const focusInput = () => {
@@ -140,7 +129,6 @@ function TestBox() {
           width: "5%",
           opacity: 0,
         }}
-        value={userText}
         // onChange={processInput}
         onKeyDown={processInput}
         disabled={
@@ -174,7 +162,7 @@ function TestBox() {
           tabIndex={0}
           onClick={() => {
             dispatch(resetTest());
-            inputRef.current?.focus();
+            focusInput();
           }}
           sx={{ margin: "12px auto", padding: "8px" }}
         >

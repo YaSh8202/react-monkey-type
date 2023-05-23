@@ -46,17 +46,18 @@ function FocusInside() {
     <Box
       position={"absolute"}
       sx={{
-        backdropFilter: "blur(4px)",
-        background: "rgba(0, 0, 0, 0.1)",
+        // backdropFilter: "blur(4px)",
+        // background: "rgba(0, 0, 0, 0.1)",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        height: "100%",
+        height: "120px",
         width: "100%",
+
       }}
     >
       <Typography variant="h6" color={"white"}>
-        Click here or start typing to focus
+        Click here to focus
       </Typography>
     </Box>
   );
@@ -173,7 +174,7 @@ function TestWords({
   onClick: () => void;
   showFocusInside: boolean;
 }) {
-  // const wordsList = useAppSelector(state=>state.tet)
+  const wordsList = useAppSelector((state) => state.test.wordsList);
   const correctWords = useAppSelector((state) => state.test.correctWords);
   const currentWords = useAppSelector((state) => state.test.currentWords);
 
@@ -183,9 +184,9 @@ function TestWords({
   const containerRef = useRef<HTMLDivElement | null>(null);
   const caretPosition = useAppSelector((state) => state.test.caretPosition);
 
-  // useEffect(() => {
-  //   containerRef.current?.scrollTo(0, 0);
-  // }, [wordsList]);
+  useEffect(() => {
+    containerRef.current?.scrollTo(0, 0);
+  }, [wordsList]);
 
   const scrollContainer = useCallback(function scrollContainer() {
     if (containerRef?.current) {
@@ -208,6 +209,8 @@ function TestWords({
         flexDirection: "column",
       }}
     >
+      {showFocusInside && <FocusInside />}
+
       <Box
         height={"120px"}
         overflow={"hidden"}
@@ -217,8 +220,10 @@ function TestWords({
         flexWrap={"wrap"}
         position={"relative"}
         ref={containerRef}
+        sx={{
+          filter: `blur(${showFocusInside ? "4px" : "0px"})`,
+        }}
       >
-        {showFocusInside && <FocusInside />}
         <Caret left={caretPosition.left} top={caretPosition.top} />
         {currentWords.map((word, index) => (
           <Box key={index}>

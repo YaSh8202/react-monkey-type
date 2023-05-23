@@ -6,7 +6,9 @@ import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   accuracySelector,
   rawSpeedSelector,
+  rawWpmSelector,
   resetTest,
+  wpmSelector,
 } from "../../store/testSlice";
 import WpmChart from "./WpmChart";
 const StatBox = ({
@@ -51,11 +53,11 @@ const StatBox = ({
 function TestResult() {
   const theme = useTheme();
   const dispatch = useAppDispatch();
-  const accuracy = useAppSelector(accuracySelector);
-  const wpm = useAppSelector((state) => state.test.wpm);
+  const wpm = useAppSelector(wpmSelector);
   const mode2 = useAppSelector((state) => state.test.mode2);
   const time = useAppSelector((state) => state.test.time);
-  const rawWpm = useAppSelector(rawSpeedSelector);
+  const rawWpm = useAppSelector(rawWpmSelector);
+  const accuracy = Math.round(wpm/rawWpm * 100);
   const timerCount = useAppSelector((state) => state.test.timerCount);
   const wordLength = useAppSelector((state) => state.test.wordLength);
   const quoteLength = useAppSelector((state) => state.test.quoteLength);

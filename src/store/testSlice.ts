@@ -34,13 +34,34 @@ function createLetters(words: string[]): Letter[][] {
   });
 }
 
+function getCharactersTyped(words: Letter[][]) {
+  const chars = {
+    correct: 0,
+    wrong: 0,
+    extra: 0,
+  };
+
+  words.forEach((word) => {
+    word.forEach((letter) => {
+      if (letter.status === "correct") {
+        chars.correct += 1;
+      } else if (letter.status === "wrong") {
+        chars.wrong += 1;
+      } else if (letter.status === "extra") {
+        chars.extra += 1;
+      }
+    });
+  });
+
+  return chars;
+}
+
 interface caretPosition {
   top: number;
   left: number;
 }
 
 export interface TestState {
-  userText: string;
   isRunning: boolean;
   wordsList: string[];
   currentWords: Letter[][];
@@ -69,12 +90,12 @@ export interface TestState {
   }[];
   searchQuote: string[] | null;
   caretPosition: caretPosition;
+  startTime: Date | null;
 }
 
 const randomizedWords = [...english.words].sort(() => Math.random() - 0.5);
 
 const initialState: TestState = {
-  userText: "",
   wordsList: randomizedWords,
   currentWords: createLetters(randomizedWords),
   isRunning: false,
@@ -100,6 +121,7 @@ const initialState: TestState = {
     top: 0,
     left: 0,
   },
+  startTime: null,
 };
 
 export const testSlice = createSlice({
@@ -108,7 +130,6 @@ export const testSlice = createSlice({
   reducers: {
     startTest: (state) => {
       state.isRunning = true;
-      state.userText = "";
       state.timerCount = 0;
       state.currentWordIndex = 0;
       state.correctWords = [];
@@ -120,10 +141,10 @@ export const testSlice = createSlice({
         top: 0,
         left: 0,
       };
+      state.startTime = new Date();
     },
     resetTest: (state) => {
       state.isRunning = false;
-      state.userText = "";
       state.timerCount = 0;
       state.currentWordIndex = 0;
       state.correctWords = [];
@@ -148,15 +169,16 @@ export const testSlice = createSlice({
         top: 0,
         left: 0,
       };
+      state.startTime = null;
     },
     stopTest: (state) => {
       state.isRunning = false;
-      state.userText = "";
       state.showResult = true;
       state.caretPosition = {
         top: 6,
         left: 0,
       };
+      state.startTime = null;
     },
     setUserText: (state, action: PayloadAction<string>) => {
       if (!state.isRunning) return;
@@ -169,8 +191,15 @@ export const testSlice = createSlice({
         if (state.currentCharIndex === 0) {
           if (state.currentWordIndex === 0) return;
           state.currentWordIndex -= 1;
-          state.currentCharIndex =
-            state.currentWords[state.currentWordIndex].length;
+          let newCharIndex = state.currentWords[state.currentWordIndex].length;
+
+          while (
+            state.currentWords[state.currentWordIndex][newCharIndex - 1]
+              .status === "untouched"
+          ) {
+            newCharIndex--;
+          }
+          state.currentCharIndex = newCharIndex;
           return;
         }
         state.currentCharIndex -= 1;
@@ -256,20 +285,19 @@ export const testSlice = createSlice({
       } else {
         state.wpm =
           state.correctWords.filter(Boolean).length / (state.timerCount / 60);
-        state.wpmHistory.push({
-          time: state.timerCount,
-          wpm: state.wpm,
-        });
-        state.rawHistory.push({
-          time: state.timerCount,
-          wpm: state.correctWords.length / (state.timerCount / 60),
-        });
+        // state.wpmHistory.push({
+        //   time: state.timerCount,
+        //   wpm: state.wpm,
+        // });
+        // state.rawHistory.push({
+        //   time: state.timerCount,
+        //   wpm: state.correctWords.length / (state.timerCount / 60),
+        // });
       }
 
       if (state.mode2 === "time" && state.timerCount >= state.time) {
         clearInterval(action.payload);
         state.isRunning = false;
-        state.userText = "";
         state.showResult = true;
       }
     },
@@ -312,6 +340,31 @@ export const testSlice = createSlice({
     setCaretPosition(state, action: PayloadAction<caretPosition>) {
       state.caretPosition = action.payload;
     },
+
+    calculateWMP(state) {
+      if (!state.startTime) return;
+
+      const timeElapsed =
+        (new Date().getTime() - state.startTime.getTime()) / 1000;
+
+      if (timeElapsed < 0.1) return;
+
+      const charsTyped = getCharactersTyped(state.currentWords);
+      const wpm = Math.ceil(charsTyped.correct / 5 / (timeElapsed / 60));
+      const rawWpm = Math.ceil(
+        (charsTyped.correct + charsTyped.wrong + charsTyped.extra) /
+          5 /
+          (timeElapsed / 60)
+      );
+      state.wpmHistory.push({
+        time: timeElapsed,
+        wpm,
+      });
+      state.rawHistory.push({
+        time: timeElapsed,
+        wpm: rawWpm,
+      });
+    },
   },
 });
 
@@ -331,11 +384,11 @@ export const {
   setSearchQuote,
   closeSearchModal,
   setCaretPosition,
+  calculateWMP,
 } = testSlice.actions;
 
 export default testSlice.reducer;
 
-export const selectUserText = (state: RootState) => state.test.userText;
 export const selectWordsList = (state: RootState) => state.test.wordsList;
 
 export const accuracySelector = (state: RootState) => {
@@ -349,4 +402,12 @@ export const rawSpeedSelector = (state: RootState) => {
   return Math.ceil(
     state.test.correctWords.length / (state.test.timerCount / 60)
   );
+};
+
+export const wpmSelector = (state: RootState) => {
+  return state.test.wpmHistory[state.test.wpmHistory.length - 1]?.wpm || 0;
+};
+
+export const rawWpmSelector = (state: RootState) => {
+  return state.test.rawHistory[state.test.rawHistory.length - 1]?.wpm || 1;
 };
