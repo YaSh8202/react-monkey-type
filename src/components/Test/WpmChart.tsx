@@ -30,6 +30,7 @@ function WpmChart() {
     fontSize: "0.8rem",
     wordSpacing: "0.1rem",
   });
+
   return (
     <ParentSize>
       {({ width, height }) => (

@@ -1,80 +1,67 @@
 import Box from "@mui/material/Box";
-import { styled } from "@mui/material/styles";
+import { styled, useTheme } from "@mui/material/styles";
+import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useRef } from "react";
-import { useSelector } from "react-redux";
-import { selectWordsList } from "../../store/testSlice";
-import { useAppSelector } from "../../store/store";
+import { useAppDispatch, useAppSelector } from "../../store/store";
+import { Letter } from "../../typings";
+import { setCaretPosition } from "../../store/testSlice";
 
-// const Caret = styled("span", {
-//   shouldForwardProp: (prop) => prop !== "left",
-//   // shouldForwardProp: (prop) => prop !== "top",
-// })<{ left: number; top: number }>(({ theme, top, left }) => ({
-//   position: "absolute",
-//   display: "inline-block",
-//   width: "2.5px",
-//   height: "26px",
-//   "&:after": {
-//     content: '""',
-//     color: theme.caret.main,
-//     position: "absolute",
-//     top: top,
-//     left: left,
-//     width: "100%",
-//     height: "100%",
-//     animation: `caret 1s infinite`,
-//     backgroundColor: theme.caret.main,
-//   },
-//   "@keyframes caret": {
-//     "0%": {
-//       opacity: 1,
-//     },
-//     "50%": {
-//       opacity: 0,
-//     },
-//     "100%": {
-//       opacity: 1,
-//     },
-//   },
-// }));
+const LINE_HEIGHT = 40;
 
-// function FocusInside() {
-//   return (
-//     <Box
-//       position={"absolute"}
-//       sx={{
-//         backdropFilter: "blur(4px)",
-//         background: "rgba(0, 0, 0, 0.1)",
-//         display: "flex",
-//         justifyContent: "center",
-//         alignItems: "center",
-//         height: "100%",
-//         width: "100%",
-//       }}
-//     >
-//       <Typography variant="h6" color={"white"}>
-//         Click here or start typing to focus
-//       </Typography>
-//     </Box>
-//   );
-// }
-
-const StyledWord = styled("span", {
-  shouldForwardProp: (prop) => prop !== "correct" && prop !== "active",
-})<{
-  correct: boolean | undefined;
-  active: boolean;
-}>(({ theme, correct, active }) => ({
-  color: correct
-    ? theme.text.main
-    : correct === false
-    ? theme.error.main
-    : theme.sub.main,
-  fontSize: "24px",
-  fontWeight: 300,
-  lineHeight: "40px",
-  letterSpacing: "1px",
-  textDecoration: active ? "underline" : "none",
+const Caret = styled("span", {
+  // shouldForwardProp: (prop) => prop !== "left",
+  // shouldForwardProp: (prop) => prop !== "top",
+})<{ left: number; top: number }>(({ theme, top, left }) => ({
+  position: "absolute",
+  display: "inline-block",
+  width: "2.5px",
+  height: "26px",
+  "&:after": {
+    content: '""',
+    transition: "all 0.08s ease-in",
+    color: theme.caret.main,
+    position: "absolute",
+    top: top,
+    left: left,
+    width: "100%",
+    height: "100%",
+    animation: `caret 1s infinite`,
+    backgroundColor: theme.caret.main,
+  },
+  "@keyframes caret": {
+    "0%": {
+      opacity: 1,
+    },
+    "50%": {
+      opacity: 0,
+    },
+    "100%": {
+      opacity: 1,
+    },
+  },
 }));
+
+function FocusInside() {
+  return (
+    <Box
+      position={"absolute"}
+      sx={{
+        // backdropFilter: "blur(4px)",
+        // background: "rgba(0, 0, 0, 0.1)",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "120px",
+        width: "100%",
+
+      }}
+    >
+      <Typography variant="h6" color={"white"}>
+        Click here to focus
+      </Typography>
+    </Box>
+  );
+}
 
 const Word = ({
   text,
@@ -83,7 +70,7 @@ const Word = ({
   containerHeight,
   scrollContainer,
 }: {
-  text: string;
+  text: Letter[];
   active: boolean;
   correct: boolean | undefined;
   containerHeight: number | undefined;
@@ -99,21 +86,103 @@ const Word = ({
   }, [t?.top, containerHeight, active, scrollContainer]);
 
   return (
-    <StyledWord ref={wordRef} correct={correct} active={active}>
-      {text}
-    </StyledWord>
+    <Box component={"span"} ref={wordRef}>
+      {text.map((l, i) => (
+        <LetterComponent letter={l} key={i} />
+      ))}
+    </Box>
+  );
+};
+
+const LetterComponent = ({ letter }: { letter: Letter }) => {
+  const letterRef = useRef<HTMLDivElement>();
+  const currentWordIndex = useAppSelector(
+    (state) => state.test.currentWordIndex
+  );
+  const currentCharIndex = useAppSelector(
+    (state) => state.test.currentCharIndex
+  );
+  const dispatch = useAppDispatch();
+  const theme = useTheme();
+
+  useEffect(() => {
+    if (!letterRef.current) return;
+
+    if (
+      currentWordIndex === letter.wordIndex &&
+      !letterRef.current.nextSibling &&
+      currentCharIndex === letter.charIndex + 1
+    ) {
+      dispatch(
+        setCaretPosition({
+          top: letterRef.current.offsetTop,
+          left: letterRef.current.offsetLeft + letterRef.current.offsetWidth,
+        })
+      );
+      return;
+    }
+
+    if (
+      currentWordIndex === letter.wordIndex &&
+      currentCharIndex === letter.charIndex
+    ) {
+      dispatch(
+        setCaretPosition({
+          top: letterRef.current.offsetTop,
+          left: letterRef.current.offsetLeft,
+        })
+      );
+    }
+  }, [
+    currentCharIndex,
+    currentWordIndex,
+    dispatch,
+    letter.charIndex,
+    letter.wordIndex,
+  ]);
+
+  const color = {
+    correct: theme.text.main,
+    wrong: theme.error.main,
+    untouched: theme.sub.main,
+    extra: theme.error.extra,
+  };
+
+  return (
+    <Box
+      ref={letterRef}
+      component={"span"}
+      sx={{
+        lineHeight: `${LINE_HEIGHT}px`,
+        fontSize: "24px",
+        color: color[letter.status],
+        fontWeight: 300,
+        marginRight: "1px",
+      }}
+    >
+      {letter.letter}
+    </Box>
   );
 };
 
 const MemoizedWord = React.memo(Word);
 
-function TestWords() {
-  const wordsList = useSelector(selectWordsList);
+function TestWords({
+  onClick,
+  showFocusInside,
+}: {
+  onClick: () => void;
+  showFocusInside: boolean;
+}) {
+  const wordsList = useAppSelector((state) => state.test.wordsList);
   const correctWords = useAppSelector((state) => state.test.correctWords);
+  const currentWords = useAppSelector((state) => state.test.currentWords);
+
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const caretPosition = useAppSelector((state) => state.test.caretPosition);
 
   useEffect(() => {
     containerRef.current?.scrollTo(0, 0);
@@ -132,6 +201,7 @@ function TestWords() {
 
   return (
     <Box
+      onClick={onClick}
       sx={{
         justifySelf: "center",
         margin: "auto 0",
@@ -139,6 +209,8 @@ function TestWords() {
         flexDirection: "column",
       }}
     >
+      {showFocusInside && <FocusInside />}
+
       <Box
         height={"120px"}
         overflow={"hidden"}
@@ -148,10 +220,12 @@ function TestWords() {
         flexWrap={"wrap"}
         position={"relative"}
         ref={containerRef}
+        sx={{
+          filter: `blur(${showFocusInside ? "4px" : "0px"})`,
+        }}
       >
-        {/* <FocusInside /> */}
-        {/* <Caret left={caretPosition.left} top={caretPosition.top} /> */}
-        {wordsList.map((word, index) => (
+        <Caret left={caretPosition.left} top={caretPosition.top} />
+        {currentWords.map((word, index) => (
           <Box key={index}>
             <MemoizedWord
               text={word}

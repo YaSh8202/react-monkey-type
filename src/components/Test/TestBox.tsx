@@ -1,36 +1,22 @@
 import Box from "@mui/material/Box";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
+  calculateWMP,
   incrementTimer,
   resetTest,
   setUserText,
   startTest,
 } from "../../store/testSlice";
-import { Stack, TextField, Typography, Tooltip } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import { Stack, Typography, Tooltip } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import IconButton from "@mui/material/IconButton/IconButton";
 import RefreshIcon from "@mui/icons-material/Refresh";
 
-const StyledTextField = styled(
-  TextField,
-  {}
-)<{}>(({ theme }) => ({
-  input: {
-    color: theme.sub.main,
-    fontSize: "1.5rem",
-  },
-  label: {
-    color: "white",
-  },
-  backgroundColor: theme.sub.alt,
-}));
-
 function TestBox() {
   const dispatch = useAppDispatch();
-  const inputRef = React.useRef<HTMLDivElement>(null);
-  const userText = useAppSelector((state) => state.test.userText);
+  const inputRef = React.useRef<HTMLInputElement>(null);
   const isRunning = useAppSelector((state) => state.test.isRunning);
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
@@ -40,6 +26,7 @@ function TestBox() {
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
   const mode2 = useAppSelector((state) => state.test.mode2);
+  const [isInputFocused, setIsInputFocused] = useState(true);
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {
@@ -55,7 +42,7 @@ function TestBox() {
     }
   }, [isRunning, dispatch, mode2]);
 
-  const processInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const processInput = (e: React.KeyboardEvent<HTMLDivElement>) => {
     // if test is over, return
     if (
       currentWordIndex === wordsList.length ||
@@ -63,12 +50,22 @@ function TestBox() {
     ) {
       return;
     }
+    const isCharacter = /^[a-zA-Z0-9!@#$%^&*()_+\-=[\]{};':"\\|,.<>/ ?]$/.test(
+      e.key
+    );
     // if test is not running, start it
-    if (!isRunning) {
+    if (isCharacter && !isRunning) {
       dispatch(startTest());
     }
+    if (isCharacter || e.key === "Backspace") {
+      dispatch(setUserText(e.key));
+      dispatch(calculateWMP());
+    }
+  };
 
-    dispatch(setUserText(e.target.value));
+  const focusInput = () => {
+    inputRef.current?.focus();
+    setIsInputFocused(true);
   };
 
   return (
@@ -116,31 +113,30 @@ function TestBox() {
         </Typography> */}
       </Stack>
 
-      <TestWords />
+      <TestWords
+        onClick={() => {
+          focusInput();
+        }}
+        showFocusInside={!isInputFocused}
+      />
 
-      <StyledTextField
-        inputRef={inputRef}
-        focused={isRunning}
+      <input
+        ref={inputRef}
         autoCapitalize="off"
         autoCorrect="off"
         autoComplete="off"
-        maxRows={1}
-        variant="filled"
-        InputLabelProps={{ shrink: false, tabIndex: 0 }}
-        sx={{
-          width: "50%",
-          maxWidth: "300px",
-          margin: "auto",
-          borderColor: "white",
-          marginTop: "1rem",
+        style={{
+          width: "5%",
+          opacity: 0,
         }}
-        value={userText}
-        onChange={processInput}
+        // onChange={processInput}
+        onKeyDown={processInput}
         disabled={
           (mode2 === "time" && timerCount >= time) ||
           currentWordIndex === wordsList.length
         }
         autoFocus
+        onBlur={() => setIsInputFocused(false)}
       />
       <Tooltip
         placement="left"
@@ -166,7 +162,7 @@ function TestBox() {
           tabIndex={0}
           onClick={() => {
             dispatch(resetTest());
-            inputRef.current?.focus();
+            focusInput();
           }}
           sx={{ margin: "12px auto", padding: "8px" }}
         >
