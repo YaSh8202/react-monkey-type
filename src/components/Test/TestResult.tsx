@@ -4,8 +4,6 @@ import IconButton from "@mui/material/IconButton/IconButton";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
-  accuracySelector,
-  rawSpeedSelector,
   rawWpmSelector,
   resetTest,
   wpmSelector,

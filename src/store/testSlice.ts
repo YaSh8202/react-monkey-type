@@ -119,7 +119,7 @@ const initialState: TestState = {
   searchQuoteModal: false,
   searchQuote: null,
   caretPosition: {
-    top: 0,
+    top: 5,
     left: 0,
   },
   startTime: null,
@@ -168,7 +168,7 @@ export const testSlice = createSlice({
       state.rawHistory = [];
       state.currentCharIndex = 0;
       state.caretPosition = {
-        top: 0,
+        top: 5,
         left: 0,
       };
       state.startTime = null;
@@ -179,7 +179,7 @@ export const testSlice = createSlice({
       state.isRunning = false;
       state.showResult = true;
       state.caretPosition = {
-        top: 6,
+        top: 5,
         left: 0,
       };
       state.startTime = null;
@@ -258,9 +258,9 @@ export const testSlice = createSlice({
 
       // if mode is word limit or quote mode and user has typed the last word , stop the test
       if (
-        // (state.mode2 === "words" && state.currentWordIndex === state.wordLength) ||
+        (state.mode2 === "words" && state.currentWordIndex === state.wordLength - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length) ||
         (state.mode2 === "quote" &&
-          state.currentWordIndex === state.wordsList.length - 1)
+          state.currentWordIndex === state.wordsList.length - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length)
       ) {
         state.isRunning = false;
         testSlice.caseReducers.stopTest(state);
