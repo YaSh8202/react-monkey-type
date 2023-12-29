@@ -91,6 +91,7 @@ export interface TestState {
   searchQuote: string[] | null;
   caretPosition: caretPosition;
   startTime: Date | null;
+  isInputFocused: boolean;
 }
 
 const randomizedWords = [...english.words].sort(() => Math.random() - 0.5);
@@ -122,6 +123,7 @@ const initialState: TestState = {
     left: 0,
   },
   startTime: null,
+  isInputFocused: true,
 };
 
 export const testSlice = createSlice({
@@ -138,7 +140,7 @@ export const testSlice = createSlice({
       state.rawHistory = [];
       state.currentCharIndex = 0;
       state.caretPosition = {
-        top: 0,
+        top: 5  ,
         left: 0,
       };
       state.startTime = new Date();
@@ -170,6 +172,8 @@ export const testSlice = createSlice({
         left: 0,
       };
       state.startTime = null;
+      state.isInputFocused = true;
+
     },
     stopTest: (state) => {
       state.isRunning = false;
@@ -252,6 +256,17 @@ export const testSlice = createSlice({
 
       state.currentCharIndex += 1;
 
+      // if mode is word limit or quote mode and user has typed the last word , stop the test
+      if (
+        // (state.mode2 === "words" && state.currentWordIndex === state.wordLength) ||
+        (state.mode2 === "quote" &&
+          state.currentWordIndex === state.wordsList.length - 1)
+      ) {
+        state.isRunning = false;
+        testSlice.caseReducers.stopTest(state);
+        return;
+      }
+
       // if (value.endsWith(" ")) {
       //   if (
       //     (state.mode2 === "time" && state.time <= state.timerCount) ||
@@ -300,6 +315,9 @@ export const testSlice = createSlice({
         state.isRunning = false;
         state.showResult = true;
       }
+    },
+    setInputFocus(state, action: PayloadAction<boolean>) {
+      state.isInputFocused = action.payload;
     },
     updateTime(state, action: PayloadAction<15 | 30 | 60 | 120>) {
       state.time = action.payload;
@@ -385,6 +403,7 @@ export const {
   closeSearchModal,
   setCaretPosition,
   calculateWMP,
+  setInputFocus,
 } = testSlice.actions;
 
 export default testSlice.reducer;
