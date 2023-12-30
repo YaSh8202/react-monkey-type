@@ -91,6 +91,7 @@ export interface TestState {
   searchQuote: string[] | null;
   caretPosition: caretPosition;
   startTime: Date | null;
+  isInputFocused: boolean;
 }
 
 const randomizedWords = [...english.words].sort(() => Math.random() - 0.5);
@@ -118,10 +119,11 @@ const initialState: TestState = {
   searchQuoteModal: false,
   searchQuote: null,
   caretPosition: {
-    top: 0,
+    top: 5,
     left: 0,
   },
   startTime: null,
+  isInputFocused: true,
 };
 
 export const testSlice = createSlice({
@@ -138,7 +140,7 @@ export const testSlice = createSlice({
       state.rawHistory = [];
       state.currentCharIndex = 0;
       state.caretPosition = {
-        top: 0,
+        top: 5  ,
         left: 0,
       };
       state.startTime = new Date();
@@ -166,16 +168,18 @@ export const testSlice = createSlice({
       state.rawHistory = [];
       state.currentCharIndex = 0;
       state.caretPosition = {
-        top: 0,
+        top: 5,
         left: 0,
       };
       state.startTime = null;
+      state.isInputFocused = true;
+
     },
     stopTest: (state) => {
       state.isRunning = false;
       state.showResult = true;
       state.caretPosition = {
-        top: 6,
+        top: 5,
         left: 0,
       };
       state.startTime = null;
@@ -252,6 +256,17 @@ export const testSlice = createSlice({
 
       state.currentCharIndex += 1;
 
+      // if mode is word limit or quote mode and user has typed the last word , stop the test
+      if (
+        (state.mode2 === "words" && state.currentWordIndex === state.wordLength - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length) ||
+        (state.mode2 === "quote" &&
+          state.currentWordIndex === state.wordsList.length - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length)
+      ) {
+        state.isRunning = false;
+        testSlice.caseReducers.stopTest(state);
+        return;
+      }
+
       // if (value.endsWith(" ")) {
       //   if (
       //     (state.mode2 === "time" && state.time <= state.timerCount) ||
@@ -301,6 +316,9 @@ export const testSlice = createSlice({
         state.showResult = true;
       }
     },
+    setInputFocus(state, action: PayloadAction<boolean>) {
+      state.isInputFocused = action.payload;
+    },
     updateTime(state, action: PayloadAction<15 | 30 | 60 | 120>) {
       state.time = action.payload;
       testSlice.caseReducers.resetTest(state);
@@ -344,16 +362,18 @@ export const testSlice = createSlice({
     calculateWMP(state) {
       if (!state.startTime) return;
 
-      const timeElapsed =
+      let timeElapsed =
         (new Date().getTime() - state.startTime.getTime()) / 1000;
 
-      if (timeElapsed < 0.1) return;
+      if (timeElapsed < 1) return;
+
+      timeElapsed = Math.floor(timeElapsed);
 
       const charsTyped = getCharactersTyped(state.currentWords);
-      const wpm = Math.ceil(charsTyped.correct / 5 / (timeElapsed / 60));
+      const wpm = Math.ceil(charsTyped.correct / 4 / (timeElapsed / 60));
       const rawWpm = Math.ceil(
         (charsTyped.correct + charsTyped.wrong + charsTyped.extra) /
-          5 /
+          4 /
           (timeElapsed / 60)
       );
       state.wpmHistory.push({
@@ -385,6 +405,7 @@ export const {
   closeSearchModal,
   setCaretPosition,
   calculateWMP,
+  setInputFocus,
 } = testSlice.actions;
 
 export default testSlice.reducer;
@@ -395,7 +416,7 @@ export const accuracySelector = (state: RootState) => {
   const { correctWords } = state.test;
   const totalWords = correctWords.length;
   const correctWordsCount = correctWords.filter(Boolean).length;
-  return Math.ceil((correctWordsCount / totalWords) * 100);
+  return Math.ceil((correctWordsCount / totalWords)) * 100;
 };
 
 export const rawSpeedSelector = (state: RootState) => {

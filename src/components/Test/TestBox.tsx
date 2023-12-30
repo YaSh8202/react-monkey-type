@@ -1,11 +1,12 @@
 import Box from "@mui/material/Box";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import TestWords from "./TestWords";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import {
   calculateWMP,
   incrementTimer,
   resetTest,
+  setInputFocus,
   setUserText,
   startTest,
 } from "../../store/testSlice";
@@ -26,7 +27,7 @@ function TestBox() {
   const theme = useTheme();
   const time = useAppSelector((state) => state.test.time);
   const mode2 = useAppSelector((state) => state.test.mode2);
-  const [isInputFocused, setIsInputFocused] = useState(true);
+  const isInputFocused = useAppSelector((state) => state.test.isInputFocused);
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {
@@ -34,6 +35,7 @@ function TestBox() {
     if (isRunning) {
       id = setInterval(() => {
         dispatch(incrementTimer(id));
+        dispatch(calculateWMP());
       }, 1000);
 
       return () => {
@@ -59,14 +61,20 @@ function TestBox() {
     }
     if (isCharacter || e.key === "Backspace") {
       dispatch(setUserText(e.key));
-      dispatch(calculateWMP());
+      // dispatch(calculateWMP());
     }
   };
 
-  const focusInput = () => {
-    inputRef.current?.focus();
-    setIsInputFocused(true);
-  };
+  // const focusInput = () => {
+  //   inputRef.current?.focus();
+  //   setIsInputFocused(true);
+  // };
+
+  useEffect(() => {
+    if (isInputFocused) {
+      inputRef.current?.focus();
+    }
+  }, [isInputFocused]);
 
   return (
     <Box
@@ -113,12 +121,7 @@ function TestBox() {
         </Typography> */}
       </Stack>
 
-      <TestWords
-        onClick={() => {
-          focusInput();
-        }}
-        showFocusInside={!isInputFocused}
-      />
+      <TestWords />
 
       <input
         ref={inputRef}
@@ -136,7 +139,9 @@ function TestBox() {
           currentWordIndex === wordsList.length
         }
         autoFocus
-        onBlur={() => setIsInputFocused(false)}
+        onBlur={() => {
+          dispatch(setInputFocus(false));
+        }}
       />
       <Tooltip
         placement="left"
@@ -161,8 +166,7 @@ function TestBox() {
         <IconButton
           tabIndex={0}
           onClick={() => {
-            dispatch(resetTest());
-            focusInput();
+            dispatch(resetTest());          
           }}
           sx={{ margin: "12px auto", padding: "8px" }}
         >

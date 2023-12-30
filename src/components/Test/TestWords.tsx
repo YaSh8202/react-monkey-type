@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { Letter } from "../../typings";
-import { setCaretPosition } from "../../store/testSlice";
+import {  setCaretPosition, setInputFocus } from "../../store/testSlice";
 
 const LINE_HEIGHT = 40;
 
@@ -53,7 +53,6 @@ function FocusInside() {
         alignItems: "center",
         height: "120px",
         width: "100%",
-
       }}
     >
       <Typography variant="h6" color={"white"}>
@@ -167,22 +166,23 @@ const LetterComponent = ({ letter }: { letter: Letter }) => {
 
 const MemoizedWord = React.memo(Word);
 
-function TestWords({
-  onClick,
-  showFocusInside,
-}: {
-  onClick: () => void;
-  showFocusInside: boolean;
-}) {
+function TestWords() {
   const wordsList = useAppSelector((state) => state.test.wordsList);
   const correctWords = useAppSelector((state) => state.test.correctWords);
   const currentWords = useAppSelector((state) => state.test.currentWords);
+  const showFocusInside = useAppSelector((state) => state.test.isInputFocused);
+  const dispatch = useAppDispatch();
+  const onClick = () => {
+    dispatch(setInputFocus(true));
+  };
+  console.log("showFocusInside", showFocusInside)
 
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const caretPosition = useAppSelector((state) => state.test.caretPosition);
+  console.log("caretPosition", caretPosition);
 
   useEffect(() => {
     containerRef.current?.scrollTo(0, 0);
@@ -209,24 +209,31 @@ function TestWords({
         flexDirection: "column",
       }}
     >
-      {showFocusInside && <FocusInside />}
+      {!showFocusInside && <FocusInside />}
 
       <Box
         height={"120px"}
         overflow={"hidden"}
         display={"flex"}
         flexDirection={"row"}
+        justifyContent={"flex-start"}
         columnGap={"8px"}
         flexWrap={"wrap"}
         position={"relative"}
         ref={containerRef}
         sx={{
-          filter: `blur(${showFocusInside ? "4px" : "0px"})`,
+          filter: `blur(${!showFocusInside ? "4px" : "0px"})`,
         }}
       >
         <Caret left={caretPosition.left} top={caretPosition.top} />
         {currentWords.map((word, index) => (
-          <Box key={index}>
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "flex-start",
+            }}
+            key={index}
+          >
             <MemoizedWord
               text={word}
               active={currentWordIndex === index}
