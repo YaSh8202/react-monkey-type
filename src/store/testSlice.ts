@@ -362,16 +362,18 @@ export const testSlice = createSlice({
     calculateWMP(state) {
       if (!state.startTime) return;
 
-      const timeElapsed =
+      let timeElapsed =
         (new Date().getTime() - state.startTime.getTime()) / 1000;
 
-      if (timeElapsed < 0.1) return;
+      if (timeElapsed < 1) return;
+
+      timeElapsed = Math.floor(timeElapsed);
 
       const charsTyped = getCharactersTyped(state.currentWords);
-      const wpm = Math.ceil(charsTyped.correct / 5 / (timeElapsed / 60));
+      const wpm = Math.ceil(charsTyped.correct / 4 / (timeElapsed / 60));
       const rawWpm = Math.ceil(
         (charsTyped.correct + charsTyped.wrong + charsTyped.extra) /
-          5 /
+          4 /
           (timeElapsed / 60)
       );
       state.wpmHistory.push({
@@ -414,7 +416,7 @@ export const accuracySelector = (state: RootState) => {
   const { correctWords } = state.test;
   const totalWords = correctWords.length;
   const correctWordsCount = correctWords.filter(Boolean).length;
-  return Math.ceil((correctWordsCount / totalWords) * 100);
+  return Math.ceil((correctWordsCount / totalWords)) * 100;
 };
 
 export const rawSpeedSelector = (state: RootState) => {

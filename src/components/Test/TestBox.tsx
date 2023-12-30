@@ -35,6 +35,7 @@ function TestBox() {
     if (isRunning) {
       id = setInterval(() => {
         dispatch(incrementTimer(id));
+        dispatch(calculateWMP());
       }, 1000);
 
       return () => {
@@ -60,7 +61,7 @@ function TestBox() {
     }
     if (isCharacter || e.key === "Backspace") {
       dispatch(setUserText(e.key));
-      dispatch(calculateWMP());
+      // dispatch(calculateWMP());
     }
   };
 
