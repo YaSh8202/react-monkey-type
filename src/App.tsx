@@ -86,7 +86,7 @@ function App() {
           onError={(error: any) => console.log(error)}
           onSuccess={(response: any) => console.log(response)}
           googleAccountConfigs={{
-            client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID!,
+            client_id: import.meta.env.VITE_APP_GOOGLE_CLIENT_ID!,
             callback: async ({ clientId, credential, select_by }) => {
               const googleCredential =
                 GoogleAuthProvider.credential(credential);
