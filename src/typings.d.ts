@@ -18,7 +18,7 @@ export type quoteLengthOptionsType =
   | "thicc"
   | "search";
 
-export type CustomTheme = {
+export interface ThemeColors {
   bgColor: string;
   caretColor: string;
   mainColor: string;
@@ -29,13 +29,19 @@ export type CustomTheme = {
   errorExtraColor: string;
   colorfulErrorColor: string;
   colorfulErrorExtraColor: string;
-};
+}
+
+export interface CustomTheme {
+  id: string;
+  title: string;
+  kind?: "light" | "dark";
+  colors: ThemeColors;
+}
 
 export type HistoryType = {
   time: number;
   wpm: number;
 };
-
 
 export interface Letter {
   letter: string;
