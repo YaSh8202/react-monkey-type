@@ -14,7 +14,12 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["vite/client"],
+    "paths": {
+      "@/*": ["src/*"],
+    },
+    "baseUrl": ".",
   },
   "include": ["src", "./node_modules/redux-persist/types"],
   "files": ["./node_modules/redux-persist/types/integration/react.d.ts"]
