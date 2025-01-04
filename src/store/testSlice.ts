@@ -140,7 +140,7 @@ export const testSlice = createSlice({
       state.rawHistory = [];
       state.currentCharIndex = 0;
       state.caretPosition = {
-        top: 5  ,
+        top: 5,
         left: 0,
       };
       state.startTime = new Date();
@@ -173,7 +173,6 @@ export const testSlice = createSlice({
       };
       state.startTime = null;
       state.isInputFocused = true;
-
     },
     stopTest: (state) => {
       state.isRunning = false;
@@ -258,9 +257,14 @@ export const testSlice = createSlice({
 
       // if mode is word limit or quote mode and user has typed the last word , stop the test
       if (
-        (state.mode2 === "words" && state.currentWordIndex === state.wordLength - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length) ||
+        (state.mode2 === "words" &&
+          state.currentWordIndex === state.wordLength - 1 &&
+          state.currentCharIndex ===
+            state.currentWords[state.currentWordIndex].length) ||
         (state.mode2 === "quote" &&
-          state.currentWordIndex === state.wordsList.length - 1 && state.currentCharIndex === state.currentWords[state.currentWordIndex].length)
+          state.currentWordIndex === state.wordsList.length - 1 &&
+          state.currentCharIndex ===
+            state.currentWords[state.currentWordIndex].length)
       ) {
         state.isRunning = false;
         testSlice.caseReducers.stopTest(state);
@@ -292,7 +296,10 @@ export const testSlice = createSlice({
       // }
     },
 
-    incrementTimer: (state, action: PayloadAction<NodeJS.Timer>) => {
+    incrementTimer: (
+      state,
+      action: PayloadAction<ReturnType<typeof setInterval>>
+    ) => {
       state.timerCount += 1;
 
       if (state.timerCount === 0) {
@@ -416,7 +423,7 @@ export const accuracySelector = (state: RootState) => {
   const { correctWords } = state.test;
   const totalWords = correctWords.length;
   const correctWordsCount = correctWords.filter(Boolean).length;
-  return Math.ceil((correctWordsCount / totalWords)) * 100;
+  return Math.ceil(correctWordsCount / totalWords) * 100;
 };
 
 export const rawSpeedSelector = (state: RootState) => {

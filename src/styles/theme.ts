@@ -255,12 +255,6 @@ export const themesMap = {
 
 // export type Themes = keyof typeof themesMap;
 
-export function getTheme(themeId: Themes) {
-  let theme = themesMap[themeId];
-
-  if (!theme) {
-    theme = themesMap.oneDark;
-  }
-
+export function getTheme(theme: CustomTheme) {
   return createThemeFunc(theme);
 }

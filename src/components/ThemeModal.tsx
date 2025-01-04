@@ -6,8 +6,9 @@ import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, useTheme } from "@mui/material/styles";
-import { Themes } from "../styles/theme";
+import { themesMap } from "../styles/theme";
 import CheckRoundedIcon from "@mui/icons-material/CheckRounded";
+import { CustomTheme } from "@/typings";
 const SearchInput = styled("input")(({ theme }) => ({
   flex: 1,
   background: "transparent",
@@ -22,24 +23,60 @@ const SearchInput = styled("input")(({ theme }) => ({
   },
 }));
 
-const SelectThemeBtn = styled("button")(({ theme }) => ({
+const SelectThemeBtn = styled("button")(
+  ({ theme }) =>
+    ({ isSelected: _ }: { isSelected: boolean }) => ({
+      display: "flex",
+      flexDirection: "row",
+      alignItems: "center",
+      justifyContent: "space-between",
+      height: "35px",
+      background: "transparent",
+      outline: "none",
+      border: "none",
+      color: theme.text.main,
+      "& p,svg": {
+        color: theme.text.main,
+      },
+      "&:hover": {
+        background: theme.text.main,
+        "& p,svg": {
+          color: theme.sub.alt,
+        },
+      },
+    })
+);
+
+const ColorCircle = styled("div")(() => ({ color }: { color: string }) => ({
+  backgroundColor: color,
+  width: 10,
+  height: 10,
   display: "flex",
-  flexDirection: "row",
   alignItems: "center",
-  height: "35px",
-  background: "transparent",
-  outline: "none",
-  border: "none",
-  "&>p,svg": {
-    color: theme.text.main,
-  },
-  "&:hover": {
-    background: theme.text.main,
-    "&>p,svg": {
-      color: theme.sub.alt,
-    },
-  },
+  borderRadius: 999,
+  justifyContent: "center",
 }));
+
+const ThemeColorChip = ({ theme }: { theme: CustomTheme }) => {
+  return (
+    <Box
+      sx={{
+        padding: "6px 8px",
+        backgroundColor: theme.colors.bgColor,
+        display: "flex",
+        flexDirection: "row",
+        gap: 1,
+        borderRadius: 1.5,
+      }}
+    >
+      <ColorCircle color={theme.colors.mainColor} />
+      <ColorCircle color={theme.colors.subColor} />
+      <ColorCircle color={theme.colors.textColor} />
+    </Box>
+  );
+};
+
+const themesList = Object.values(themesMap);
 
 function ThemeModal() {
   const open = useAppSelector((state) => state.theme.themeModalOpen);
@@ -48,15 +85,17 @@ function ThemeModal() {
   const theme = useTheme();
   const currentTheme = useAppSelector((state) => state.theme.theme);
   const [search, setSearch] = useState("");
-  const [filteredThemes, setFilteredThemes] = useState<Themes[]>(
-    Object.values(Themes)
-  );
+  const [filteredThemes, setFilteredThemes] =
+    useState<CustomTheme[]>(themesList);
 
   const searchHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
     setFilteredThemes(
-      Object.values(Themes).filter((t) =>
-        t.toLowerCase().includes(e.target.value.toLowerCase())
+      // Object.values(Themes).filter((t) =>
+      //   t.toLowerCase().includes(e.target.value.toLowerCase())
+      // )
+      themesList.filter((t) =>
+        t.title.toLocaleLowerCase().includes(e.target.value.toLowerCase())
       )
     );
   };
@@ -112,6 +151,7 @@ function ThemeModal() {
             }}
           />
           <SearchInput
+            autoFocus
             value={search}
             onChange={searchHandler}
             type="text"
@@ -121,23 +161,28 @@ function ThemeModal() {
         <Stack direction={"column"}>
           {filteredThemes.map((t) => (
             <SelectThemeBtn
-              key={t}
+              key={t.id}
               onClick={() => {
                 dispatch(setTheme(t));
               }}
+              isSelected={currentTheme.id === t.id}
             >
-              <CheckRoundedIcon
-                fontSize="small"
-                sx={{
-                  color: theme.sub.main,
-                  mr: "5px",
-                  padding: "0.5px",
-                  opacity: currentTheme === t ? 1 : 0,
-                }}
-              />
-              <Typography sx={{ justifySelf: "flex-end", fontSize: "14px" }}>
-                {t}
-              </Typography>
+              <Stack direction={"row"} alignItems={"center"}>
+                <CheckRoundedIcon
+                  fontSize="small"
+                  sx={{
+                    color: theme.sub.main,
+                    mr: "5px",
+                    padding: "0.5px",
+                    opacity: currentTheme.id === t.id ? 1 : 0,
+                  }}
+                />
+                <Typography sx={{ justifySelf: "flex-end", fontSize: "14px" }}>
+                  {t.title}
+                </Typography>
+              </Stack>
+
+              <ThemeColorChip theme={t} />
             </SelectThemeBtn>
           ))}
         </Stack>

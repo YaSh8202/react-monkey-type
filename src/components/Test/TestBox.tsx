@@ -31,7 +31,7 @@ function TestBox() {
 
   // increment timer by 1 if isRunning is true
   useEffect(() => {
-    let id: NodeJS.Timer;
+    let id: ReturnType<typeof setInterval>;
     if (isRunning) {
       id = setInterval(() => {
         dispatch(incrementTimer(id));

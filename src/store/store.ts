@@ -4,14 +4,47 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import themeSlice from "./themeSlice";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
-import { persistReducer, persistStore } from "redux-persist";
+import { PersistConfig, persistReducer, persistStore } from "redux-persist";
 import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
+import { themesMap } from "@/styles/theme";
+import createMigrate from "redux-persist/es/createMigrate";
+
+const migrations = {
+  0: (state: any) => {
+    // migration to clear out the state
+
+    if (state.theme.theme === undefined) {
+      return {
+        ...state,
+        theme: {
+          ...state.theme,
+          theme: themesMap["oneDark"],
+        },
+      };
+    }
+
+    if (typeof state.theme.theme === "string") {
+      return {
+        ...state,
+        theme: {
+          ...state.theme,
+          theme: themesMap[state.theme.theme] || themesMap["oneDark"],
+        },
+      };
+    }
+
+    return state;
+  },
+};
 
 const persistConfig = {
   key: "root",
   storage,
   stateReconcliler: autoMergeLevel1,
-};
+  version: 0,
+  migrate: createMigrate(migrations, { debug: false }),
+} as PersistConfig<any>;
+
 const persistedReducer = persistReducer(
   persistConfig,
   combineReducers({ theme: themeSlice, test: testSliceReducer })

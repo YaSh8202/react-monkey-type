@@ -67,7 +67,7 @@ function Footer() {
             }}
           >
             <PaletteRoundedIcon sx={{ padding: "1.5px" }} fontSize="small" />
-            {currentTheme}
+            {currentTheme.title}
           </Box>
         </Stack>
       </Stack>

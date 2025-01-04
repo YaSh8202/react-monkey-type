@@ -1,14 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import { Themes } from "../styles/theme";
+import { themesMap } from "../styles/theme";
+import { CustomTheme } from "@/typings";
 
 export interface ThemeState {
-  theme: Themes;
+  theme: CustomTheme;
   themeModalOpen: boolean;
 }
 
 const initialState: ThemeState = {
-  theme: Themes.oneDark,
+  theme: themesMap["oneDark"],
   themeModalOpen: false,
 };
 
@@ -16,7 +17,7 @@ export const themeSlice = createSlice({
   name: "theme",
   initialState,
   reducers: {
-    setTheme: (state, action: PayloadAction<Themes>) => {
+    setTheme: (state, action: PayloadAction<CustomTheme>) => {
       state.theme = action.payload;
       state.themeModalOpen = false;
     },
