@@ -4,7 +4,7 @@ import Typography from "@mui/material/Typography";
 import React, { useCallback, useEffect, useRef } from "react";
 import { useAppDispatch, useAppSelector } from "../../store/store";
 import { Letter } from "../../typings";
-import {  setCaretPosition, setInputFocus } from "../../store/testSlice";
+import { setCaretPosition, setInputFocus } from "../../store/testSlice";
 
 const LINE_HEIGHT = 40;
 
@@ -175,14 +175,12 @@ function TestWords() {
   const onClick = () => {
     dispatch(setInputFocus(true));
   };
-  console.log("showFocusInside", showFocusInside)
 
   const currentWordIndex = useAppSelector(
     (state) => state.test.currentWordIndex
   );
   const containerRef = useRef<HTMLDivElement | null>(null);
   const caretPosition = useAppSelector((state) => state.test.caretPosition);
-  console.log("caretPosition", caretPosition);
 
   useEffect(() => {
     containerRef.current?.scrollTo(0, 0);

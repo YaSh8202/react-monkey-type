@@ -129,6 +129,7 @@ function ThemeModal() {
           backgroundColor: theme.background.main,
           minHeight: 300,
           maxHeight: "80vh",
+          overflowY: "hidden",
           borderRadius: "10px",
           outline: `0.25rem solid ${theme.sub.alt}`,
           // boxShadow: ` 0 0 0 calc(4px + 2px) ${theme.sub.alt}`,
@@ -158,7 +159,12 @@ function ThemeModal() {
             placeholder="Type to search"
           />
         </Box>
-        <Stack direction={"column"}>
+        <Stack
+          direction={"column"}
+          sx={{
+            overflowY: "auto",
+          }}
+        >
           {filteredThemes.map((t) => (
             <SelectThemeBtn
               key={t.id}

@@ -4,7 +4,7 @@ import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import themeSlice from "./themeSlice";
 import storage from "redux-persist/lib/storage";
 import thunk from "redux-thunk";
-import { PersistConfig, persistReducer, persistStore } from "redux-persist";
+import { persistReducer, persistStore } from "redux-persist";
 import autoMergeLevel1 from "redux-persist/es/stateReconciler/autoMergeLevel1";
 import { themesMap } from "@/styles/theme";
 import createMigrate from "redux-persist/es/createMigrate";
@@ -43,7 +43,7 @@ const persistConfig = {
   stateReconcliler: autoMergeLevel1,
   version: 0,
   migrate: createMigrate(migrations, { debug: false }),
-} as PersistConfig<any>;
+};
 
 const persistedReducer = persistReducer(
   persistConfig,

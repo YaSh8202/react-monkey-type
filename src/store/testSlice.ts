@@ -119,7 +119,7 @@ const initialState: TestState = {
   searchQuoteModal: false,
   searchQuote: null,
   caretPosition: {
-    top: 5,
+    top: 10,
     left: 0,
   },
   startTime: null,

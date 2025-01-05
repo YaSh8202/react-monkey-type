@@ -188,6 +188,142 @@ const miamiNights = {
   },
 };
 
+const voc = {
+  id: "voc",
+  title: "VOC",
+  colors: {
+    bgColor: "#190618",
+    mainColor: "#e0caac",
+    caretColor: "#e0caac",
+    subColor: "#4c1e48",
+    subAltColor: "#2c0c28",
+    textColor: "#eeeae4",
+    errorColor: "#af3735",
+    errorExtraColor: "#7e2a29",
+    colorfulErrorColor: "#af3735",
+    colorfulErrorExtraColor: "#7e2a29",
+  },
+} as CustomTheme;
+
+const watermelon = {
+  id: "watermelon",
+  title: "Watermelon",
+  colors: {
+    bgColor: "#1f4437",
+    mainColor: "#d6686f",
+    caretColor: "#d6686f",
+    subColor: "#3e7a65",
+    subAltColor: "#244d3f",
+    textColor: "#cdc6bc",
+    errorColor: "#c82931",
+    errorExtraColor: "#ac1823",
+    colorfulErrorColor: "#c82931",
+    colorfulErrorExtraColor: "#ac1823",
+  },
+} as CustomTheme;
+
+const eight008 = {
+  id: "eight008",
+  title: "8008",
+  colors: {
+    bgColor: "#333a45",
+    mainColor: "#f44c7f",
+    caretColor: "#f44c7f",
+    subColor: "#939eae",
+    subAltColor: "#2e343d", // Chose the last defined --sub-alt-color
+    textColor: "#e9ecf0",
+    errorColor: "#da3333",
+    errorExtraColor: "#791717",
+    colorfulErrorColor: "#c5da33",
+    colorfulErrorExtraColor: "#849224",
+  },
+} as CustomTheme;
+
+const afterDark80s = {
+  id: "afterDark80s",
+  title: "80s After Dark",
+  colors: {
+    bgColor: "#1b1d36",
+    mainColor: "#fca6d1",
+    caretColor: "#99d6ea",
+    subColor: "#99d6ea",
+    subAltColor: "#17182c",
+    textColor: "#e1e7ec",
+    errorColor: "#fffb85",
+    errorExtraColor: "#fffb85",
+    colorfulErrorColor: "#fffb85",
+    colorfulErrorExtraColor: "#fffb85",
+  },
+} as CustomTheme;
+
+const arch = {
+  id: "arch",
+  title: "Arch",
+  colors: {
+    bgColor: "#0c0d11",
+    mainColor: "#7ebab5",
+    caretColor: "#7ebab5",
+    subColor: "#454864",
+    subAltColor: "#171a25",
+    textColor: "#f6f5f5",
+    errorColor: "#ff4754",
+    errorExtraColor: "#b02a33",
+    colorfulErrorColor: "#ff4754",
+    colorfulErrorExtraColor: "#b02a33",
+  },
+} as CustomTheme;
+
+const bliss = {
+  id: "bliss",
+  title: "Bliss",
+  colors: {
+    bgColor: "#262727",
+    mainColor: "#f0d3c9",
+    caretColor: "#f0d3c9",
+    subColor: "#665957",
+    subAltColor: "#343231",
+    textColor: "#fff",
+    errorColor: "#bd4141",
+    errorExtraColor: "#883434",
+    colorfulErrorColor: "#bd4141",
+    colorfulErrorExtraColor: "#883434",
+  },
+} as CustomTheme;
+
+const blueberryDark = {
+  id: "blueberryDark",
+  title: "Blueberry Dark",
+  colors: {
+    bgColor: "#212b42",
+    mainColor: "#add7ff",
+    caretColor: "#962f7e",
+    subColor: "#5c7da5",
+    subAltColor: "#1b2334",
+    textColor: "#91b4d5",
+    errorColor: "#df4576",
+    errorExtraColor: "#d996ac",
+    colorfulErrorColor: "#df4576",
+    colorfulErrorExtraColor: "#d996ac",
+  },
+} as CustomTheme;
+
+const bushido = {
+  id: "bushido",
+  title: "Bushido",
+  colors: {
+    bgColor: "#242933",
+    mainColor: "#ec4c56",
+    caretColor: "#ec4c56",
+    subColor: "#596172",
+    subAltColor: "#1c222d",
+    textColor: "#f6f0e9",
+    errorColor: "#ec4c56",
+    errorExtraColor: "#9b333a",
+    colorfulErrorColor: "#ecdc4c",
+    colorfulErrorExtraColor: "#bdb03d",
+  },
+} as CustomTheme;
+
 function createThemeFunc(theme: CustomTheme) {
   return createTheme({
     background: {
@@ -241,6 +377,13 @@ export enum Themes {
   dev = "dev",
   moonlight = "moonlight",
   miamiNights = "miami nights",
+  voc = "voc",
+  watermelon = "watermelon",
+  eight008 = "eight008",
+  afterDark80s = "afterDark80s",
+  arch = "arch",
+  bliss = "bliss",
+  blueberryDark = "blueberryDark",
 }
 
 export const themesMap = {
@@ -251,6 +394,14 @@ export const themesMap = {
   dev,
   moonlight,
   miamiNights,
+  voc,
+  watermelon,
+  eight008,
+  afterDark80s,
+  arch,
+  bliss,
+  blueberryDark,
+  bushido,
 } as Record<string, CustomTheme>;
 
 // export type Themes = keyof typeof themesMap;
